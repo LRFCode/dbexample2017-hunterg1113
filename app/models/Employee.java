@@ -18,6 +18,8 @@ public class Employee
     private String firstName;
     @Column(name = "BirthDate")
     private String birthDate;
+    @Column(name = "Title")
+    private String title;
 
     public String getBirthDate()
     {
@@ -57,5 +59,15 @@ public class Employee
     public void setFirstName(String firstName)
     {
         this.firstName = firstName;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 }
