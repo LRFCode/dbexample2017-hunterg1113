@@ -1,0 +1,14 @@
+@(employees : List[Employee])
+<!DOCTYPE html>
+<html>
+<body>
+<table>
+    @for(employee <- employees) {
+    <tr>
+        <td>@employee.getFirstName</td>
+        <td>@employee.getLastName</td>
+    </tr>
+    }
+</table>
+</body>
+</html>
