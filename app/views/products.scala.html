@@ -1,0 +1,22 @@
+@(products : List[Product])
+
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Products</h1>
+<table>
+    @for(product <- products) {
+    <tr>
+        <td>@product.getProductName</td>
+        <td>@product.getUnitPrice</td>
+        <td>@product.getUnitsInStock</td>
+        <td>
+            <form action="@routes.ProductController.getProduct(product.getProductId)" method="get">
+                <button type="submit">Edit</button>
+            </form>
+        </td>
+    </tr>
+    }
+</table>
+</body>
+</html>

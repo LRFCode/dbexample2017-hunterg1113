@@ -1,0 +1,18 @@
+@(product : Product)
+<!DOCTYPE html>
+<html>
+    <body>
+        <form method="post">
+        <h2>Edit Product</h2>
+        <label>Product Name</label>
+        <input type="text" name="productname" id="productname" value="@product.getProductName">
+        <br />
+        <label>Unit Price</label>
+        <input type="text" name="unitprice" id="unitprice" value="@product.getUnitPrice">
+        <br />
+        <label>Units In Stock</label>
+        <input type="text" name="unitsinstock" id="unitsinstock" value="@product.getUnitsInStock">
+        <button type="submit">Save</button>
+        </form>
+    </body>
+</html>

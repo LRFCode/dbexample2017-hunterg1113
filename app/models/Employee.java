@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "Employee")
@@ -20,6 +21,10 @@ public class Employee
     private String birthDate;
     @Column(name = "Title")
     private String title;
+    @Column(name = "TitleOfCourtesy")
+    private String titleOfCourtesy;
+    @Column(name = "Salary")
+    private BigDecimal salary;
 
     public String getBirthDate()
     {
@@ -69,5 +74,25 @@ public class Employee
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    public String getTitleOfCourtesy()
+    {
+        return titleOfCourtesy;
+    }
+
+    public void setTitleOfCourtesy(String titleOfCourtesy)
+    {
+        this.titleOfCourtesy = titleOfCourtesy;
+    }
+
+    public BigDecimal getSalary()
+    {
+        return salary;
+    }
+
+    public void setSalary(BigDecimal salary)
+    {
+        this.salary = salary;
     }
 }

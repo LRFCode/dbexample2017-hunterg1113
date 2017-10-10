@@ -2,12 +2,15 @@
 <!DOCTYPE html>
 <html>
 <body>
+<h1>Employees</h1>
 <table>
     @for(employee <- employees) {
     <tr>
-        <td>@employee.getFirstName</td>
+        <td>@employee.getTitleOfCourtesy</td>
+        <td><a href="/employee/@employee.getEmployeeID">@employee.getFirstName</a></td>
         <td>@employee.getLastName</td>
         <td>@employee.getTitle</td>
+        <td>@employee.getSalary</td>
     </tr>
     }
 </table>
