@@ -1,0 +1,34 @@
+@(suppliers : List[Supplier], categories : List[Category])
+
+<!DOCTYPE html>
+<html>
+<body>
+<form method="post">
+    <h2>Add Product</h2>
+    <label>Product Name</label>
+    <input type="text" name="productname" id="productname">
+    <br />
+    <label>Unit Price</label>
+    <input type="text" name="unitprice" id="unitprice">
+    <br />
+    <label>Units In Stock</label>
+    <input type="text" name="unitsinstock" id="unitsinstock">
+    <br />
+    <label>Supplier Name</label>
+    <select name="suppliername" id="suppliername">
+        @for(supplier <- suppliers) {
+        <option value="@supplier.getSupplierId">@supplier.getCompanyName</option>
+        }
+    </select>
+    <br />
+    <label>Category Name</label>
+    <select name="categoryname" id="categoryname">
+        @for(category <- categories) {
+        <option value="@category.getCategoryId">@category.getCategoryName</option>
+        }
+    </select>
+    <br />
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

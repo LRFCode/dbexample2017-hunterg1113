@@ -15,9 +15,13 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /employees                  controllers.EmployeeController.getEmployees
 GET     /employee/:id               controllers.EmployeeController.getEmployee(id:Integer)
 POST    /employee/:id               controllers.EmployeeController.updateEmployee(id:Integer)
+GET     /searchemployees            controllers.EmployeeController.searchEmployees
+GET     /addemployee                controllers.EmployeeController.newEmployee
+POST    /addemployee                controllers.EmployeeController.addEmployee
 
 GET     /products                   controllers.ProductController.getProducts
 GET     /product/:id                controllers.ProductController.getProduct(id:Integer)
 POST    /product/:id                controllers.ProductController.updateProduct(id:Integer)
-
-
+GET     /searchproducts             controllers.ProductController.searchProducts
+GET     /addproduct                 controllers.ProductController.newProduct
+POST    /addproduct                 controllers.ProductController.addProduct

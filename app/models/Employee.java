@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "Employee")
@@ -25,6 +26,8 @@ public class Employee
     private String titleOfCourtesy;
     @Column(name = "Salary")
     private BigDecimal salary;
+    @Column(name = "ReportsTo")
+    private Integer reportsTo;
 
     public String getBirthDate()
     {
@@ -66,6 +69,12 @@ public class Employee
         this.firstName = firstName;
     }
 
+    public String getFullName()
+    {
+        return titleOfCourtesy + " " + firstName + " " + lastName;
+
+    }
+
     public String getTitle()
     {
         return title;
@@ -91,8 +100,36 @@ public class Employee
         return salary;
     }
 
+    public BigDecimal getSalaryRounded()
+    {
+        return salary.setScale(2,BigDecimal.ROUND_HALF_UP);
+    }
+
     public void setSalary(BigDecimal salary)
     {
         this.salary = salary;
+    }
+
+    public Integer getReportsTo()
+    {
+        return reportsTo;
+    }
+
+    public void setReportsTo(Integer reportsTo)
+    {
+        this.reportsTo = reportsTo;
+    }
+
+    public String getReportsToLastName(List<Employee> employees)
+    {
+        for (Employee employee : employees)
+        {
+            if (employee.employeeID == reportsTo)
+            {
+                return employee.lastName + ", " + employee.firstName;
+            }
+        }
+
+        return "no supervisor assigned";
     }
 }

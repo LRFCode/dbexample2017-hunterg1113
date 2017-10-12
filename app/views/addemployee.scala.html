@@ -1,0 +1,32 @@
+@(employees : List[Employee])
+<!DOCTYPE html>
+<html>
+<body>
+<form method="post">
+    <h2>Add Employee</h2>
+    <label>Title of Courtesy</label>
+    <input type="text" name="titleofcourtesy" id="titleofcourtesy">
+    <br />
+    <label>First Name</label>
+    <input type="text" name="firstname" id="firstname">
+    <br />
+    <label>Last Name</label>
+    <input type="text" name="lastname" id="lastname">
+    <br />
+    <label>Title</label>
+    <input type="text" name="title" id="title">
+    <br />
+    <label>Salary</label>
+    <input type="text" name="salary" id="salary">
+    <br />
+    <label>Reports To</label>
+    <select name="reportsto" id="reportsto">
+        @for(employee <- employees) {
+        <option selected value="@employee.getEmployeeID">@employee.getLastName</option>
+        }
+    </select>
+    <br />
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

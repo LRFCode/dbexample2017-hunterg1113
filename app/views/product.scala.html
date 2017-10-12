@@ -1,4 +1,4 @@
-@(product : Product)
+@(product : Product, suppliers : List[Supplier], categories : List[Category])
 <!DOCTYPE html>
 <html>
     <body>
@@ -12,6 +12,29 @@
         <br />
         <label>Units In Stock</label>
         <input type="text" name="unitsinstock" id="unitsinstock" value="@product.getUnitsInStock">
+        <br />
+        <label>Supplier Name</label>
+        <select name="suppliername" id="suppliername">
+            @for(supplier <- suppliers) {
+                @if(product.getSupplierId == supplier.getSupplierId){
+                <option selected value="@supplier.getSupplierId">@supplier.getCompanyName</option>
+                } else {
+                <option value="@supplier.getSupplierId">@supplier.getCompanyName</option>
+                }
+            }
+        </select>
+        <br />
+        <label>Category Name</label>
+        <select name="categoryname" id="categoryname">
+            @for(category <- categories) {
+                @if(product.getCategoryId == category.getCategoryId){
+                <option selected value="@category.getCategoryId">@category.getCategoryName</option>
+                } else {
+                <option value="@category.getCategoryId">@category.getCategoryName</option>
+                }
+            }
+        </select>
+        <br />
         <button type="submit">Save</button>
         </form>
     </body>

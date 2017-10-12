@@ -1,4 +1,4 @@
-@(employee : Employee)
+@(employee : Employee, employees : List[Employee])
 <!DOCTYPE html>
 <html>
     <body>
@@ -18,6 +18,18 @@
             <br />
             <label>Salary</label>
             <input type="text" name="salary" id="salary" value="@employee.getSalary">
+            <br />
+            <label>Reports To</label>
+            <select name="reportsto" id="reportsto">
+                @for(reportsemployee <- employees) {
+                    @if(employee.getReportsTo == reportsemployee.getEmployeeID) {
+                    <option selected value="@reportsemployee.getEmployeeID">@reportsemployee.getFullName</option>
+                    } else {
+                    <option value="@reportsemployee.getEmployeeID">@reportsemployee.getFullName</option>
+                    }
+                }
+            </select>
+            <br />
             <button type="submit">Save</button>
         </form>
     </body>
