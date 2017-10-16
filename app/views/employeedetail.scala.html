@@ -1,0 +1,23 @@
+@(employees : List[EmployeeDetail])
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Employees</h1>
+<table>
+    <tr>
+        <th align="left">Name</th>
+        <th align="left">Title</th>
+        <th align="left">Salary</th>
+        <th align="left">Reports To</th>
+    </tr>
+    @for(employee <- employees) {
+    <tr>
+        <td><a href="/employee/@employee.getEmployeeId">@employee.getFullName</a></td>
+        <td>@employee.getTitle</td>
+        <td>@employee.getSalaryRounded</td>
+        <td>@employee.getReportsToFullName</td>
+    </tr>
+    }
+</table>
+</body>
+</html>

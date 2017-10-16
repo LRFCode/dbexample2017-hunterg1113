@@ -1,4 +1,4 @@
-@(employee : Employee, employees : List[Employee])
+@(employee : Employee, employees : List[Employee], employeeTerritories : List[EmployeeTerritory])
 
 <!DOCTYPE html>
 <html>
@@ -40,7 +40,13 @@
                 </tr>
                 <tr>
                     <td>TerritoryIds</td>
-                    <td></td>
+                    <td>
+                        <select>
+                            @for(employeeTerritory <- employeeTerritories) {
+                            <option>@employeeTerritory.getCompoundKey.getTerritoryId</option>
+                            }
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td></td>

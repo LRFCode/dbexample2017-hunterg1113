@@ -7,28 +7,28 @@ import java.io.Serializable;
 @Embeddable
 public class CompoundKey implements Serializable
 {
-    @Column(name = "OrderId")
-    private int orderId;
-    @Column(name = "ProductId")
-    private int productId;
+    @Column(name = "EmployeeId")
+    private int employeeId;
+    @Column(name = "TerritoryId")
+    private int territoryId;
 
-    public int getOrderId()
+    public int getEmployeeId()
     {
-        return orderId;
+        return employeeId;
     }
 
-    public void setOrderId(int orderId)
+    public void setEmployeeId(int employeeId)
     {
-        this.orderId = orderId;
+        this.employeeId = employeeId;
     }
 
-    public int getProductId()
+    public int getTerritoryId()
     {
-        return productId;
+        return territoryId;
     }
 
-    public void setProductId(int productId)
+    public void setTerritoryId(int territoryId)
     {
-        this.productId = productId;
+        this.territoryId = territoryId;
     }
 }

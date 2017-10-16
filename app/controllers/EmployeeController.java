@@ -1,11 +1,11 @@
 package controllers;
 
 import models.Employee;
+import models.EmployeeDetail;
 import models.EmployeeTerritory;
 import models.FullEmployee;
 import play.data.DynamicForm;
 import play.data.FormFactory;
-import play.db.jpa.JPA;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
@@ -30,34 +30,77 @@ public class EmployeeController extends Controller
     @Transactional(readOnly = true)
     public Result getEmployees()
     {
-        List<FullEmployee> employees =
-                jpaApi.
-                        em().
-                        createQuery("SELECT NEW FullEmployee(e.employeeId, e.titleOfCourtesy, e.lastName, e.firstName, e.title, e.salary, m.lastName, m.firstName) " +
-                                    "FROM Employee e " +
-                                    "LEFT OUTER JOIN Employee m ON e.reportsTo = m.employeeId", FullEmployee.class).
-                        getResultList();
+        String employeeIdValue = session().get("employeeId");
+
+        if (employeeIdValue != null)
+        {
+            List<FullEmployee> employees =
+                    jpaApi.
+                            em().
+                            createQuery("SELECT NEW FullEmployee(e.employeeId, e.titleOfCourtesy, e.lastName, e.firstName, e.title, e.salary, m.lastName, m.firstName) " +
+                                        "FROM Employee e " +
+                                        "LEFT OUTER JOIN Employee m ON e.reportsTo = m.employeeId", FullEmployee.class).
+                            getResultList();
 
 
-        return ok(views.html.employees.render(employees));
+            return ok(views.html.employees.render(employees));
+        }
+        else
+        {
+            return ok(views.html.accessdenied.render());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Result getEmployeesNativeSQL()
+    {
+        String employeeIdValue = session().get("employeeId");
+
+        if (employeeIdValue != null)
+        {
+            List<EmployeeDetail> employees =
+                    jpaApi.em().
+                    createNativeQuery("SELECT e.employeeId, e.titleOfCourtesy, e.lastName, e.firstName, e.title, e.salary, m.lastName AS reportsToLastName, m.firstName AS reportsToFirstName " +
+                                      "FROM Employee e " +
+                                      "LEFT OUTER JOIN Employee m ON e.reportsTo = m.employeeId", EmployeeDetail.class).
+                    getResultList();
+
+
+            return ok(views.html.employeedetail.render(employees));
+        }
+        else
+        {
+            return ok(views.html.accessdenied.render());
+        }
     }
 
     @Transactional(readOnly = true)
     public Result getEmployee(Integer id)
     {
-        Employee employee =
-                jpaApi.em().
-                        createQuery("SELECT e FROM Employee e WHERE employeeId = :id", Employee.class).
-                        setParameter("id", id).
-                        getSingleResult();
+        String employeeIdValue = session().get("employeeId");
 
-        List<Employee> employees =
-                jpaApi.
-                        em().
-                        createQuery("SELECT e FROM Employee e ORDER BY lastname, firstname", Employee.class).
-                        getResultList();
+        if (employeeIdValue != null && Integer.parseInt(employeeIdValue) == id)
+        {
+            Employee employee =
+                    jpaApi.em().
+                            createQuery("SELECT e FROM Employee e WHERE employeeId = :id", Employee.class).
+                            setParameter("id", id).
+                            getSingleResult();
 
-        return ok(views.html.employee.render(employee, employees));
+            List<Employee> employees =
+                    jpaApi.
+                            em().
+                            createQuery("SELECT e FROM Employee e ORDER BY lastname, firstname", Employee.class).
+                            getResultList();
+
+            List<EmployeeTerritory> employeeTerritories = employee.getEmployeeTerritories();
+
+            return ok(views.html.employee.render(employee, employees, employeeTerritories));
+        }
+        else
+        {
+            return ok(views.html.accessdenied.render());
+        }
     }
 
     @Transactional
@@ -74,9 +117,9 @@ public class EmployeeController extends Controller
 
         Employee employee =
                 jpaApi.em().
-                createQuery("SELECT e FROM Employee e WHERE employeeId = :id", Employee.class).
-                setParameter("id", id).
-                getSingleResult();
+                        createQuery("SELECT e FROM Employee e WHERE employeeId = :id", Employee.class).
+                        setParameter("id", id).
+                        getSingleResult();
 
         employee.setTitleOfCourtesy(titleOfCourtesy);
         employee.setFirstName(firstName);
@@ -96,16 +139,16 @@ public class EmployeeController extends Controller
         DynamicForm dynamicForm = formFactory.form().bindFromRequest();
         String lastName = dynamicForm.get("lastname");
 
-        if(lastName == null)
+        if (lastName == null)
         {
             lastName = "";
         }
 
         List<Employee> employees =
                 jpaApi.em().
-                createQuery("SELECT e FROM Employee e WHERE lastname LIKE :lastname ORDER BY lastname, firstname", Employee.class).
-                setParameter("lastname","%" + lastName + "%").
-                getResultList();
+                        createQuery("SELECT e FROM Employee e WHERE lastname LIKE :lastname ORDER BY lastname, firstname", Employee.class).
+                        setParameter("lastname", "%" + lastName + "%").
+                        getResultList();
 
         return ok(views.html.searchemployees.render(employees));
     }

@@ -6,32 +6,29 @@ import javax.persistence.*;
 @Table(name = "EmployeeTerritory")
 public class EmployeeTerritory
 {
-    @Id
-    @Column(name = "EmployeeId")
-    private int employeeId;
-    @Column(name = "TerritoryId")
-    private Integer territoryId;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employeeid")
+    @EmbeddedId
+    CompoundKey compoundKey;
+    @ManyToOne
+    @JoinColumn(name = "employeeId")
     private Employee employee;
 
-    public int getEmployeeId()
+    public CompoundKey getCompoundKey()
     {
-        return employeeId;
+        return compoundKey;
     }
 
-    public void setEmployeeId(int employeeId)
+    public void setCompoundKey(CompoundKey compoundKey)
     {
-        this.employeeId = employeeId;
+        this.compoundKey = compoundKey;
     }
 
-    public int getTerritoryId()
+    public Employee getEmployee()
     {
-        return territoryId;
+        return employee;
     }
 
-    public void setTerritoryId(Integer territoryId)
+    public void setEmployee(Employee employee)
     {
-        this.territoryId = territoryId;
+        this.employee = employee;
     }
 }

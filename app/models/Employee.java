@@ -28,8 +28,6 @@ public class Employee
     private Integer reportsTo;
     @OneToMany(mappedBy = "employee")
     private List<EmployeeTerritory> employeeTerritories = new ArrayList<>();
-    @OneToMany(mappedBy = "employee")
-    private List<OrderHeader> orderHeaders = new ArrayList<>();
 
     public String getBirthDate()
     {
@@ -140,15 +138,8 @@ public class Employee
         return employeeTerritories;
     }
 
-    public String getTerritoryIds()
+    public void setEmployeeTerritories(List<EmployeeTerritory> employeeTerritories)
     {
-        String territoryIds = "";
-
-        for(EmployeeTerritory employeeTerritory : employeeTerritories)
-        {
-            territoryIds += employeeTerritory.getTerritoryId() + " ";
-        }
-
-        return territoryIds;
+        this.employeeTerritories = employeeTerritories;
     }
 }

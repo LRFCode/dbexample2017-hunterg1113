@@ -13,6 +13,7 @@ GET     /message                    controllers.AsyncController.message
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 GET     /employees                  controllers.EmployeeController.getEmployees
+GET     /employeesDetail            controllers.EmployeeController.getEmployeesNativeSQL
 GET     /employee/:id               controllers.EmployeeController.getEmployee(id:Integer)
 POST    /employee/:id               controllers.EmployeeController.updateEmployee(id:Integer)
 GET     /searchemployees            controllers.EmployeeController.searchEmployees
@@ -25,3 +26,8 @@ POST    /product/:id                controllers.ProductController.updateProduct(
 GET     /searchproducts             controllers.ProductController.searchProducts
 GET     /addproduct                 controllers.ProductController.newProduct
 POST    /addproduct                 controllers.ProductController.addProduct
+
+GET     /login                      controllers.LoginController.getLogin
+POST    /login                      controllers.LoginController.postLogin
+GET     /accessdenied               controllers.LoginController.getAccessDenied
+GET     /logout                     controllers.LoginController.logout
