@@ -1,8 +1,11 @@
 package controllers;
 
 import models.Employee;
+import models.EmployeeTerritory;
+import models.FullEmployee;
 import play.data.DynamicForm;
 import play.data.FormFactory;
+import play.db.jpa.JPA;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
@@ -27,11 +30,14 @@ public class EmployeeController extends Controller
     @Transactional(readOnly = true)
     public Result getEmployees()
     {
-        List<Employee> employees =
+        List<FullEmployee> employees =
                 jpaApi.
                         em().
-                        createQuery("SELECT e FROM Employee e ORDER BY lastname, firstname", Employee.class).
+                        createQuery("SELECT NEW FullEmployee(e.employeeId, e.titleOfCourtesy, e.lastName, e.firstName, e.title, e.salary, m.lastName, m.firstName) " +
+                                    "FROM Employee e " +
+                                    "LEFT OUTER JOIN Employee m ON e.reportsTo = m.employeeId", FullEmployee.class).
                         getResultList();
+
 
         return ok(views.html.employees.render(employees));
     }
@@ -59,6 +65,7 @@ public class EmployeeController extends Controller
     {
         DynamicForm dynamicForm = formFactory.form().bindFromRequest();
 
+        String titleOfCourtesy = dynamicForm.get("titleofcourtesy");
         String firstName = dynamicForm.get("firstname");
         String lastName = dynamicForm.get("lastname");
         String title = dynamicForm.get("title");
@@ -71,6 +78,7 @@ public class EmployeeController extends Controller
                 setParameter("id", id).
                 getSingleResult();
 
+        employee.setTitleOfCourtesy(titleOfCourtesy);
         employee.setFirstName(firstName);
         employee.setLastName(lastName);
         employee.setTitle(title);
@@ -94,11 +102,10 @@ public class EmployeeController extends Controller
         }
 
         List<Employee> employees =
-                jpaApi.
-                        em().
-                        createQuery("SELECT e FROM Employee e WHERE lastname LIKE :lastname ORDER BY lastname, firstname", Employee.class).
-                        setParameter("lastname","%" + lastName + "%").
-                        getResultList();
+                jpaApi.em().
+                createQuery("SELECT e FROM Employee e WHERE lastname LIKE :lastname ORDER BY lastname, firstname", Employee.class).
+                setParameter("lastname","%" + lastName + "%").
+                getResultList();
 
         return ok(views.html.searchemployees.render(employees));
     }

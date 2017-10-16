@@ -1,36 +1,63 @@
 @(employee : Employee, employees : List[Employee])
+
 <!DOCTYPE html>
 <html>
     <body>
         <form method="post">
             <h2>Edit Employee</h2>
-            <label>Title of Courtesy</label>
-            <input type="text" name="titleofcourtesy" id="titleofcourtesy" value="@employee.getTitleOfCourtesy">
-            <br />
-            <label>First Name</label>
-            <input type="text" name="firstname" id="firstname" value="@employee.getFirstName">
-            <br />
-            <label>Last Name</label>
-            <input type="text" name="lastname" id="lastname" value="@employee.getLastName">
-            <br />
-            <label>Title</label>
-            <input type="text" name="title" id="title" value="@employee.getTitle">
-            <br />
-            <label>Salary</label>
-            <input type="text" name="salary" id="salary" value="@employee.getSalary">
-            <br />
-            <label>Reports To</label>
-            <select name="reportsto" id="reportsto">
-                @for(reportsemployee <- employees) {
-                    @if(employee.getReportsTo == reportsemployee.getEmployeeID) {
-                    <option selected value="@reportsemployee.getEmployeeID">@reportsemployee.getFullName</option>
-                    } else {
-                    <option value="@reportsemployee.getEmployeeID">@reportsemployee.getFullName</option>
-                    }
-                }
-            </select>
-            <br />
-            <button type="submit">Save</button>
+            <table>
+                <tr>
+                    <td align="left"><label>Title of Courtesy</label></td>
+                    <td><input type="text" name="titleofcourtesy" id="titleofcourtesy" value="@employee.getTitleOfCourtesy"></td>
+                </tr>
+                <tr>
+                    <td align="left"><label>First Name</label></td>
+                    <td><input type="text" name="firstname" id="firstname" value="@employee.getFirstName"></td>
+                </tr>
+                <tr>
+                    <td align="left"><label>Last Name</label></td>
+                    <td><input type="text" name="lastname" id="lastname" value="@employee.getLastName"></td>
+                </tr>
+                <tr>
+                    <td align="left"><label>Title</label></td>
+                    <td><input type="text" name="title" id="title" value="@employee.getTitle"></td>
+                </tr>
+                <tr>
+                    <td align="left"><label>Salary</label></td>
+                    <td><input type="text" name="salary" id="salary" value="@employee.getSalary"></td>
+                </tr>
+                <tr>
+                    <td align="left"><label>Reports To</label></td>
+                    <td><select name="reportsto" id="reportsto">
+                        @for(reportsemployee <- employees) {
+                        @if(employee.getReportsTo == reportsemployee.getEmployeeId) {
+                        <option selected value="@reportsemployee.getEmployeeId">@reportsemployee.getFullName</option>
+                        } else {
+                        <option value="@reportsemployee.getEmployeeId">@reportsemployee.getFullName</option>
+                        }
+                        }
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>TerritoryIds</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td align="right"><button type="submit">Save</button></td>
+                </tr>
+            </table>
         </form>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+

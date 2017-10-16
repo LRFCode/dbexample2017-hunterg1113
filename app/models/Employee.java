@@ -1,10 +1,8 @@
 package models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,7 +11,7 @@ public class Employee
 {
     @Id
     @Column(name = "EmployeeId")
-    private int employeeID;
+    private int employeeId;
     @Column(name = "LastName")
     private String lastName;
     @Column(name = "FirstName")
@@ -28,6 +26,10 @@ public class Employee
     private BigDecimal salary;
     @Column(name = "ReportsTo")
     private Integer reportsTo;
+    @OneToMany(mappedBy = "employee")
+    private List<EmployeeTerritory> employeeTerritories = new ArrayList<>();
+    @OneToMany(mappedBy = "employee")
+    private List<OrderHeader> orderHeaders = new ArrayList<>();
 
     public String getBirthDate()
     {
@@ -39,14 +41,14 @@ public class Employee
         this.birthDate = birthDate;
     }
 
-    public int getEmployeeID()
+    public int getEmployeeId()
     {
-        return employeeID;
+        return employeeId;
     }
 
-    public void setEmployeeID(int employeeID)
+    public void setEmployeeId(int employeeId)
     {
-        this.employeeID = employeeID;
+        this.employeeId = employeeId;
     }
 
     public String getLastName()
@@ -102,7 +104,7 @@ public class Employee
 
     public BigDecimal getSalaryRounded()
     {
-        return salary.setScale(2,BigDecimal.ROUND_HALF_UP);
+        return salary.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     public void setSalary(BigDecimal salary)
@@ -124,12 +126,29 @@ public class Employee
     {
         for (Employee employee : employees)
         {
-            if (employee.employeeID == reportsTo)
+            if (employee.employeeId == reportsTo)
             {
                 return employee.lastName + ", " + employee.firstName;
             }
         }
 
         return "no supervisor assigned";
+    }
+
+    public List<EmployeeTerritory> getEmployeeTerritories()
+    {
+        return employeeTerritories;
+    }
+
+    public String getTerritoryIds()
+    {
+        String territoryIds = "";
+
+        for(EmployeeTerritory employeeTerritory : employeeTerritories)
+        {
+            territoryIds += employeeTerritory.getTerritoryId() + " ";
+        }
+
+        return territoryIds;
     }
 }

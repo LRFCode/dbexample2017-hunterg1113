@@ -1,4 +1,4 @@
-@(employees : List[Employee])
+ @(employees : List[FullEmployee])
 <!DOCTYPE html>
 <html>
 <body>
@@ -12,10 +12,10 @@
     </tr>
     @for(employee <- employees) {
     <tr>
-        <td><a href="/employee/@employee.getEmployeeID">@employee.getFullName</a></td>
+        <td><a href="/employee/@employee.getEmployeeId">@employee.getFullName</a></td>
         <td>@employee.getTitle</td>
         <td>@employee.getSalaryRounded</td>
-        <td>@employee.getReportsToLastName(employees)</td>
+        <td>@employee.getReportsToFullName</td>
     </tr>
     }
 </table>
