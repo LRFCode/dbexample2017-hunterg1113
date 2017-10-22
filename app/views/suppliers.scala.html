@@ -1,0 +1,26 @@
+@(suppliers : List[Supplier])
+<!DOCTYPE html>
+
+<html>
+    <body>
+    <h1>Suppliers</h1>
+        <table>
+            <tr>
+                <th align="left">Supplier</th>
+                <th align="left">Products</th>
+            </tr>
+            @for(supplier <- suppliers) {
+            <tr>
+                <td align="left">@supplier.getCompanyName</td>
+                <td>
+                    <select>
+                        @for(product <- supplier.getProducts) {
+                        <option>@product.getProductName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            }
+        </table>
+    </body>
+</html>

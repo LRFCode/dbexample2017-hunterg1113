@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Employee;
+import models.Password;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.db.jpa.JPAApi;
@@ -9,6 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 
 public class LoginController extends Controller
@@ -35,22 +37,25 @@ public class LoginController extends Controller
         String username = dynamicForm.get("username");
         String password = dynamicForm.get("password");
 
-        String sql = "SELECT e FROM Employee e WHERE lastname = :username AND password = :password";
+        String sql = "SELECT e FROM Employee e WHERE lastname = :username";
 
         List<Employee> employees = jpaApi.em().createQuery(sql).
-                                   setParameter("username", username).
-                                   setParameter("password",password).
-                                   getResultList();
+                setParameter("username", username).
+                getResultList();
 
         if (employees.size() == 1)
         {
-            session().put("employeeId", "" + employees.get(0).getEmployeeId());
-            return redirect(routes.ProductController.getProducts());
+            byte[] hashedPassword = Password.hashPassword(password.toCharArray(), employees.get(0).getSalt());
+            byte[] dbPassword = employees.get(0).getPassword();
+
+            if (Arrays.equals(hashedPassword, dbPassword))
+            {
+                session().put("employeeId", "" + employees.get(0).getEmployeeId());
+                return redirect(routes.EmployeeController.getEmployeesNativeSQL());
+            }
         }
-        else
-        {
-            return ok(views.html.accessdenied.render());
-        }
+
+        return ok(views.html.accessdenied.render());
     }
 
     public Result getAccessDenied()

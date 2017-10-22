@@ -1,9 +1,6 @@
 package models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -23,6 +20,9 @@ public class Product
     private Integer supplierId;
     @Column(name = "CategoryId")
     private Integer categoryId;
+    @ManyToOne
+    @JoinColumn(name = "supplierId")
+    private Supplier supplier;
 
     public int getProductId()
     {
@@ -87,5 +87,15 @@ public class Product
     public void setCategoryId(Integer categoryId)
     {
         this.categoryId = categoryId;
+    }
+
+    public Supplier getSupplier()
+    {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier)
+    {
+        this.supplier = supplier;
     }
 }

@@ -14,16 +14,18 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 GET     /employees                  controllers.EmployeeController.getEmployees
 GET     /employeesDetail            controllers.EmployeeController.getEmployeesNativeSQL
+GET     /searchemployees            controllers.EmployeeController.searchEmployees
 GET     /employee/:id               controllers.EmployeeController.getEmployee(id:Integer)
 POST    /employee/:id               controllers.EmployeeController.updateEmployee(id:Integer)
-GET     /searchemployees            controllers.EmployeeController.searchEmployees
+GET     /photo/:id                  controllers.EmployeeController.getPhoto(id:Integer)
 GET     /addemployee                controllers.EmployeeController.newEmployee
 POST    /addemployee                controllers.EmployeeController.addEmployee
 
+
 GET     /products                   controllers.ProductController.getProducts
+GET     /searchproducts             controllers.ProductController.searchProducts
 GET     /product/:id                controllers.ProductController.getProduct(id:Integer)
 POST    /product/:id                controllers.ProductController.updateProduct(id:Integer)
-GET     /searchproducts             controllers.ProductController.searchProducts
 GET     /addproduct                 controllers.ProductController.newProduct
 POST    /addproduct                 controllers.ProductController.addProduct
 
@@ -31,3 +33,7 @@ GET     /login                      controllers.LoginController.getLogin
 POST    /login                      controllers.LoginController.postLogin
 GET     /accessdenied               controllers.LoginController.getAccessDenied
 GET     /logout                     controllers.LoginController.logout
+
+GET     /suppliers                  controllers.SupplierController.getSuppliers
+
+GET     /randomUsers                controllers.RandomUserController.updateClients

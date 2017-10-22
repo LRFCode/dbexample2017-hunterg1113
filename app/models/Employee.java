@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Id;
 
 @Entity
 @Table(name = "Employee")
@@ -26,6 +27,12 @@ public class Employee
     private BigDecimal salary;
     @Column(name = "ReportsTo")
     private Integer reportsTo;
+    @Column(name = "Photo")
+    private byte[] photo;
+    @Column(name = "Password")
+    private byte[] password;
+    @Column (name = "Salt")
+    private byte[] salt;
     @OneToMany(mappedBy = "employee")
     private List<EmployeeTerritory> employeeTerritories = new ArrayList<>();
 
@@ -141,5 +148,35 @@ public class Employee
     public void setEmployeeTerritories(List<EmployeeTerritory> employeeTerritories)
     {
         this.employeeTerritories = employeeTerritories;
+    }
+
+    public byte[] getPhoto()
+    {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo)
+    {
+        this.photo = photo;
+    }
+
+    public byte[] getPassword()
+    {
+        return password;
+    }
+
+    public void setPassword(byte[] password)
+    {
+        this.password = password;
+    }
+
+    public byte[] getSalt()
+    {
+        return salt;
+    }
+
+    public void setSalt(byte[] salt)
+    {
+        this.salt = salt;
     }
 }

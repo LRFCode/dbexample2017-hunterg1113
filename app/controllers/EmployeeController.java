@@ -1,9 +1,6 @@
 package controllers;
 
-import models.Employee;
-import models.EmployeeDetail;
-import models.EmployeeTerritory;
-import models.FullEmployee;
+import models.*;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.db.jpa.JPAApi;
@@ -38,8 +35,8 @@ public class EmployeeController extends Controller
                     jpaApi.
                             em().
                             createQuery("SELECT NEW FullEmployee(e.employeeId, e.titleOfCourtesy, e.lastName, e.firstName, e.title, e.salary, m.lastName, m.firstName) " +
-                                        "FROM Employee e " +
-                                        "LEFT OUTER JOIN Employee m ON e.reportsTo = m.employeeId", FullEmployee.class).
+                                    "FROM Employee e " +
+                                    "LEFT OUTER JOIN Employee m ON e.reportsTo = m.employeeId", FullEmployee.class).
                             getResultList();
 
 
@@ -60,10 +57,10 @@ public class EmployeeController extends Controller
         {
             List<EmployeeDetail> employees =
                     jpaApi.em().
-                    createNativeQuery("SELECT e.employeeId, e.titleOfCourtesy, e.lastName, e.firstName, e.title, e.salary, m.lastName AS reportsToLastName, m.firstName AS reportsToFirstName " +
-                                      "FROM Employee e " +
-                                      "LEFT OUTER JOIN Employee m ON e.reportsTo = m.employeeId", EmployeeDetail.class).
-                    getResultList();
+                            createNativeQuery("SELECT e.employeeId, e.titleOfCourtesy, e.lastName, e.firstName, e.title, e.salary, m.lastName AS reportsToLastName, m.firstName AS reportsToFirstName " +
+                                    "FROM Employee e " +
+                                    "LEFT OUTER JOIN Employee m ON e.reportsTo = m.employeeId", EmployeeDetail.class).
+                            getResultList();
 
 
             return ok(views.html.employeedetail.render(employees));
@@ -76,10 +73,8 @@ public class EmployeeController extends Controller
 
     @Transactional(readOnly = true)
     public Result getEmployee(Integer id)
-    {
-        String employeeIdValue = session().get("employeeId");
-
-        if (employeeIdValue != null && Integer.parseInt(employeeIdValue) == id)
+     {
+        if (session().get("employeeId") != null)
         {
             Employee employee =
                     jpaApi.em().
@@ -88,8 +83,7 @@ public class EmployeeController extends Controller
                             getSingleResult();
 
             List<Employee> employees =
-                    jpaApi.
-                            em().
+                    jpaApi.em().
                             createQuery("SELECT e FROM Employee e ORDER BY lastname, firstname", Employee.class).
                             getResultList();
 
@@ -114,12 +108,29 @@ public class EmployeeController extends Controller
         String title = dynamicForm.get("title");
         BigDecimal salary = new BigDecimal(dynamicForm.get("salary"));
         Integer reportsToId = Integer.parseInt(dynamicForm.get("reportsto"));
+        String password = dynamicForm.get("password");
 
         Employee employee =
                 jpaApi.em().
                         createQuery("SELECT e FROM Employee e WHERE employeeId = :id", Employee.class).
                         setParameter("id", id).
                         getSingleResult();
+
+        if (password.trim().length() > 0)
+        {
+            try
+            {
+                byte[] salt = Password.getNewSalt();
+                byte[] hashedPassword = Password.hashPassword(password.toCharArray(),salt);
+                employee.setPassword(hashedPassword);
+                employee.setSalt(salt);
+            }
+            catch (Exception e)
+            {
+                System.out.println("Unable to save password");
+                e.printStackTrace();
+            }
+        }
 
         employee.setTitleOfCourtesy(titleOfCourtesy);
         employee.setFirstName(firstName);
@@ -189,5 +200,23 @@ public class EmployeeController extends Controller
                         getResultList();
 
         return ok(views.html.addemployee.render(employees));
+    }
+
+    @Transactional(readOnly = true)
+    public Result getPhoto(Integer employeeId)
+    {
+        Employee employee = jpaApi.em().
+                createQuery("SELECT e FROM Employee e WHERE employeeId = :id", Employee.class).
+                setParameter("id", employeeId).
+                getSingleResult();
+
+        if (employee.getPhoto() == null)
+        {
+            return null;
+        }
+        else
+        {
+            return ok(employee.getPhoto()).as("image/bmp");
+        }
     }
 }
