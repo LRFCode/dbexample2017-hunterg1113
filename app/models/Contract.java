@@ -1,10 +1,10 @@
 package models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Contract")
@@ -19,8 +19,10 @@ public class Contract
     private String startDate;
     @Column(name = "CompletionDate")
     private String completionDate;
-    @Column(name = "Photos")
-    private byte[] photos;
+    @Column(name = "Plans")
+    private byte[] plans;
+    @OneToMany(mappedBy = "contract")
+    private List<Estimate> estimates = new ArrayList<>();
 
     public int getContractId()
     {
@@ -62,13 +64,23 @@ public class Contract
         this.completionDate = completionDate;
     }
 
-    public byte[] getPhotos()
+    public byte[] getPlans()
     {
-        return photos;
+        return plans;
     }
 
-    public void setPhotos(byte[] photos)
+    public void setPlans(byte[] plans)
     {
-        this.photos = photos;
+        this.plans = plans;
+    }
+
+    public List<Estimate> getEstimates()
+    {
+        return estimates;
+    }
+
+    public void setEstimates(List<Estimate> estimates)
+    {
+        this.estimates = estimates;
     }
 }

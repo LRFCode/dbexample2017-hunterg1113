@@ -1,10 +1,9 @@
 package models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "Estimate")
@@ -19,8 +18,15 @@ public class Estimate
     private int categoryId;
     @Column(name = "EstimateHours")
     private BigDecimal estimateHours;
-    @Column(name = "Plans")
-    private byte[] plans;
+    @Column(name = "Photo")
+    private byte[] photo;
+
+    @ManyToOne()
+    @JoinColumn(name = "contractId")
+    private Contract contract;
+    @OneToMany(mappedBy = "estimate")
+    private List<Actual> actuals;
+
 
     public int getEstimateId()
     {
@@ -62,14 +68,34 @@ public class Estimate
         this.estimateHours = estimateHours;
     }
 
-    public byte[] getPlans()
+    public byte[] getPhoto()
     {
-        return plans;
+        return photo;
     }
 
-    public void setPlans(byte[] plans)
+    public void setPhoto(byte[] photo)
     {
-        this.plans = plans;
+        this.photo = photo;
+    }
+
+    public Contract getContract()
+    {
+        return contract;
+    }
+
+    public void setContract(Contract contract)
+    {
+        this.contract = contract;
+    }
+
+    public List<Actual> getActuals()
+    {
+        return actuals;
+    }
+
+    public void setActuals(List<Actual> actuals)
+    {
+        this.actuals = actuals;
     }
 }
 
