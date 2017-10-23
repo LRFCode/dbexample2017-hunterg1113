@@ -4,29 +4,32 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "Project")
-public class Project
+@Table(name = "Contract")
+public class Contract
 {
     @Id
-    @Column(name = "ProjectId")
-    private int projectId;
+    @Column(name = "ContractId")
+    private int contractId;
     @Column(name = "ClientId")
     private int clientId;
     @Column(name = "StartDate")
     private String startDate;
     @Column(name = "CompletionDate")
     private String completionDate;
+    @Column(name = "Photos")
+    private byte[] photos;
 
-    public int getProjectId()
+    public int getContractId()
     {
-        return projectId;
+        return contractId;
     }
 
-    public void setProjectId(int projectId)
+    public void setContractId(int contractId)
     {
-        this.projectId = projectId;
+        this.contractId = contractId;
     }
 
     public int getClientId()
@@ -57,5 +60,15 @@ public class Project
     public void setCompletionDate(String completionDate)
     {
         this.completionDate = completionDate;
+    }
+
+    public byte[] getPhotos()
+    {
+        return photos;
+    }
+
+    public void setPhotos(byte[] photos)
+    {
+        this.photos = photos;
     }
 }

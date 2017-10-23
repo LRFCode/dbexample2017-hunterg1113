@@ -1,9 +1,8 @@
 package models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.List;
 
 
 @Entity

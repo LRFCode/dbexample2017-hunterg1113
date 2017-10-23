@@ -18,9 +18,6 @@ public class ProjectUser
     private byte[] password;
     @Column(name = "Salt")
     private byte[] salt;
-    @ManyToOne
-    @JoinColumn(name = "employeeId")
-    private EmployeeProject employeeProject;
 
     public int getUserId()
     {
@@ -70,15 +67,5 @@ public class ProjectUser
     public void setSalt(byte[] salt)
     {
         this.salt = salt;
-    }
-
-    public EmployeeProject getEmployeeProject()
-    {
-        return employeeProject;
-    }
-
-    public void setEmployeeProject(EmployeeProject employeeProject)
-    {
-        this.employeeProject = employeeProject;
     }
 }

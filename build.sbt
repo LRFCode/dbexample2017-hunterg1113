@@ -1,4 +1,4 @@
-name := """db-example"""
+name := """projectmanager"""
 
 version := "1.0-SNAPSHOT"
 

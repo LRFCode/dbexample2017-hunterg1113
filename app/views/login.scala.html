@@ -34,6 +34,11 @@ button:hover {
     background-color: #f44336;
 }
 
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+}
+
 img.avatar {
     width: 40%;
     border-radius: 50%;
@@ -47,43 +52,28 @@ span.psw {
     float: right;
     padding-top: 16px;
 }
-
-media screen and (max-width: 300px) {
-    span.psw {
-       display: block;
-       float: none;
-    }
-    .cancelbtn {
-       width: 100%;
-    }
-}
-
 </style>
+<head>
+    <title>Login</title>
+</head>
 <body>
-<div class="row">
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4">
-        <form method="post">
-            <div class="row"></div>
 
-            <div class="container">
-                <label><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="username" required>
+<form method="post">
+    <div class="imgcontainer"></div>
 
-                <label><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="password" required>
+    <div class="container">
+        <label><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="username" required>
 
-                <button type="submit">Login</button>
-                <input type="checkbox" checked="checked"> Remember me
-            </div>
+        <label><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="password" required>
 
-            <div class="container" style="background-color:#f1f1f1">
-                <button type="button" class="cancelbtn">Cancel</button>
-                <span class="psw">Forgot <a href=@routes.EmployeeController.getEmployees>password?</a></span>
-            </div>
-        </form>
+        <button type="submit">Login</button>
+        <input type="checkbox" checked="checked"> Remember me
     </div>
-    <div class="col-sm-4"></div>
-</div>
+
+    <div class="container"></div>
+</form>
+
 </body>
 </html>

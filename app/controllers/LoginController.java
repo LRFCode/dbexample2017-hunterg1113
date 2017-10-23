@@ -1,7 +1,7 @@
 package controllers;
 
-import models.Employee;
 import models.Password;
+import models.ProjectUser;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.db.jpa.JPAApi;
@@ -15,8 +15,8 @@ import java.util.List;
 
 public class LoginController extends Controller
 {
-    private FormFactory formFactory;
-    private JPAApi jpaApi;
+    FormFactory formFactory;
+    JPAApi jpaApi;
 
     @Inject
     public LoginController(FormFactory formFactory, JPAApi jpaApi)
@@ -30,43 +30,27 @@ public class LoginController extends Controller
         return ok(views.html.login.render());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Result postLogin()
     {
         DynamicForm dynamicForm = formFactory.form().bindFromRequest();
-        String username = dynamicForm.get("username");
+
         String password = dynamicForm.get("password");
+        String username = dynamicForm.get("username");
 
-        String sql = "SELECT e FROM Employee e WHERE lastname = :username";
+        List<ProjectUser> projectUsers = jpaApi.em().createQuery("FROM ProjectUser WHERE username = :username").
+                                         setParameter("username",username).getResultList();
 
-        List<Employee> employees = jpaApi.em().createQuery(sql).
-                setParameter("username", username).
-                getResultList();
-
-        if (employees.size() == 1)
+        if(projectUsers.size() > 0)
         {
-            byte[] hashedPassword = Password.hashPassword(password.toCharArray(), employees.get(0).getSalt());
-            byte[] dbPassword = employees.get(0).getPassword();
+            byte[] hashedPassword = Password.hashPassword(password.toCharArray(),projectUsers.get(0).getSalt());
 
-            if (Arrays.equals(hashedPassword, dbPassword))
+            if (Arrays.equals(hashedPassword,projectUsers.get(0).getPassword()));
             {
-                session().put("employeeId", "" + employees.get(0).getEmployeeId());
-                return redirect(routes.EmployeeController.getEmployeesNativeSQL());
+                return ok(projectUsers.get(0).getUserName() + " logged in");
             }
         }
 
-        return ok(views.html.accessdenied.render());
-    }
-
-    public Result getAccessDenied()
-    {
-        return ok(views.html.accessdenied.render());
-    }
-
-    public Result logout()
-    {
-        session().clear();
-
-        return ok("You are logged out");
+        return ok("error");
     }
 }
