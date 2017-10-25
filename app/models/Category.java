@@ -14,6 +14,8 @@ public class Category
     private int categoryId;
     @Column(name = "CategoryName")
     private String categoryName;
+    @OneToMany(mappedBy = "category")
+    private List<Estimate> estimates;
 
     public int getCategoryId()
     {
@@ -33,5 +35,15 @@ public class Category
     public void setCategoryName(String categoryName)
     {
         this.categoryName = categoryName;
+    }
+
+    public List<Estimate> getEstimates()
+    {
+        return estimates;
+    }
+
+    public void setEstimates(List<Estimate> estimates)
+    {
+        this.estimates = estimates;
     }
 }

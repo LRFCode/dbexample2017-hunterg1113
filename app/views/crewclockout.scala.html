@@ -1,0 +1,55 @@
+@(foreman : Employee, employees : List[Employee], equipments : List[Equipment])
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clock-Out</title>
+</head>
+
+<body>
+<h3>Crew Clock-Out</h3>
+<form method="post" action="@routes.ForemanController.getWelcomeScreen(foreman.getEmployeeId)">
+    <table>
+        @for(employee <- employees) {
+        <tr>
+            <td>@employee.getLastName, @employee.getFirstName</td>
+            <td>
+                <select>
+                    <option></option>
+                    <option>4:00 PM</option>
+                    <option>4:15 PM</option>
+                    <option>4:30 PM</option>
+                    <option>4:45 PM</option>
+                    <option>5:00 PM</option>
+                    <option>5:15 PM</option>
+                    <option>5:30 PM</option>
+                    <option>5:45 PM</option>
+                    <option>6:00 PM</option>
+                    <option>6:15 PM</option>
+                    <option>6:30 PM</option>
+                    <option>6:45 PM</option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        }
+    </table>
+    <h3>Equipment Check-In</h3>
+    <table>
+        <tr>
+            <th align="left">Name</th>
+            <th>Hours</th>
+        </tr>
+        @for(equipment <- equipments) {
+        <tr>
+            <td>@equipment.getEquipmentName</td>
+            <td><input type="text" placeholder="Enter Hours" name="equipmenthours" required></td>
+        </tr>
+        }
+    </table>
+    <br />
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>
+

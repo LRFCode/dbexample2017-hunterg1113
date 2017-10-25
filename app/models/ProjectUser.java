@@ -2,6 +2,7 @@ package models;
 
 import javax.persistence.*;
 import javax.persistence.Id;
+import java.util.List;
 
 @Entity
 @Table(name = "User")
@@ -18,6 +19,9 @@ public class ProjectUser
     private byte[] password;
     @Column(name = "Salt")
     private byte[] salt;
+    @ManyToOne
+    @JoinColumn(name = "employeeId")
+    private Employee employee;
 
     public int getUserId()
     {
@@ -67,5 +71,15 @@ public class ProjectUser
     public void setSalt(byte[] salt)
     {
         this.salt = salt;
+    }
+
+    public Employee getEmployee()
+    {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee)
+    {
+        this.employee = employee;
     }
 }

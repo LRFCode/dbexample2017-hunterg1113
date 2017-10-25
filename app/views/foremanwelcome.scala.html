@@ -1,0 +1,39 @@
+@(foreman : Employee, client : Client, actuals : List[Actual])
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Foreman</title>
+</head>
+<body>
+<h2>Welcome, @foreman.getFirstName</h2>
+<h3><u>Current Project</u></h3>
+<label>Name : </label> @client.getFullName
+<br />
+<label>Address: </label> @client.getFullAddress
+<br />
+<br />
+<br />
+<table>
+    <tr>
+        <th align="left">Category</th>
+        <th align="right">Estimate Hours</th>
+        <th align="right">Actual Hours</th>
+    </tr>
+    @for(actual <- actuals) {
+    <tr>
+        <td>0@actual.getEstimate.getCategoryId @actual.getEstimate.getCategory.getCategoryName</td>
+        <td align="right" width="125">@actual.getEstimate.getEstimateHours</td>
+        <td align="right" width="125">@actual.getActualHours</td>
+    </tr>
+    }
+</table>
+<form method="get" action="@routes.ForemanController.getClockOutScreen(foreman.getEmployeeId)">
+    <button type="submit">Clock-Out</button>
+</form>
+
+<form method="get" action="@routes.ForemanController.getClockOutScreen(foreman.getEmployeeId)">
+    <button type="submit">Upload Images</button>
+</form>
+</body>
+</html>

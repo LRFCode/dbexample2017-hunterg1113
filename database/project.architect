@@ -266,33 +266,33 @@
    </folder>
   </table>
   <relationships>
-   <relationship id="REL71" populated="true" UUID="e658d337-d464-4ca5-bd35-29ac68673b86" deferrability="7" deleteRule="3" fk-table-ref="TAB55" fkCardinality="7" identifying="false" name="Estimate_Actual_fk" physicalName="estimate_actual_fk" pk-table-ref="TAB1" pkCardinality="2" updateRule="3" >
+   <relationship id="REL71" populated="true" UUID="e658d337-d464-4ca5-bd35-29ac68673b86" deferrability="7" deleteRule="3" fk-table-ref="TAB55" fkCardinality="7" identifying="false" name="Estimate_Actual_fk" physicalName="Estimate_Actual_fk" pk-table-ref="TAB1" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP72" populated="true" UUID="7ea0d2b3-5511-45de-b350-0e8d25b550ed" fk-column-ref="COL57" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL2" />
    </relationship>
-   <relationship id="REL73" populated="true" UUID="048af559-2ab7-4ce8-853a-7d2891adcd01" deferrability="7" deleteRule="3" fk-table-ref="TAB27" fkCardinality="7" identifying="false" name="Project_Equipment_fk" physicalName="project_equipment_fk" pk-table-ref="TAB9" pkCardinality="2" updateRule="3" >
+   <relationship id="REL73" populated="true" UUID="048af559-2ab7-4ce8-853a-7d2891adcd01" deferrability="7" deleteRule="3" fk-table-ref="TAB27" fkCardinality="7" identifying="false" name="Project_Equipment_fk" physicalName="Project_Equipment_fk" pk-table-ref="TAB9" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP74" populated="true" UUID="e148ad6b-edc7-4277-9801-e1964367cde9" fk-column-ref="COL30" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL10" />
    </relationship>
-   <relationship id="REL75" populated="true" UUID="532ab2ef-6227-4c64-9f3f-c4d8d5d4ad40" deferrability="7" deleteRule="3" fk-table-ref="TAB1" fkCardinality="7" identifying="false" name="Project_Estimate_fk" physicalName="project_estimate_fk" pk-table-ref="TAB9" pkCardinality="2" updateRule="3" >
+   <relationship id="REL75" populated="true" UUID="532ab2ef-6227-4c64-9f3f-c4d8d5d4ad40" deferrability="7" deleteRule="3" fk-table-ref="TAB1" fkCardinality="7" identifying="false" name="Project_Estimate_fk" physicalName="Project_Estimate_fk" pk-table-ref="TAB9" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP76" populated="true" UUID="b5a66889-83ff-4165-b6a0-36983cbd9964" fk-column-ref="COL3" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL10" />
    </relationship>
-   <relationship id="REL77" populated="true" UUID="bb02949c-db91-4566-920f-1f61c57fc413" deferrability="7" deleteRule="3" fk-table-ref="TAB63" fkCardinality="7" identifying="false" name="Project_ProjectPicture_fk" physicalName="project_projectpicture_fk" pk-table-ref="TAB9" pkCardinality="2" updateRule="3" >
+   <relationship id="REL77" populated="true" UUID="bb02949c-db91-4566-920f-1f61c57fc413" deferrability="7" deleteRule="3" fk-table-ref="TAB63" fkCardinality="7" identifying="false" name="Project_ProjectPicture_fk" physicalName="Project_ProjectPicture_fk" pk-table-ref="TAB9" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP78" populated="true" UUID="a10b4e81-8aa8-469c-b79b-e21a0c87c657" fk-column-ref="COL68" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL10" />
    </relationship>
-   <relationship id="REL79" populated="true" UUID="452372f8-c664-4755-98e1-138fb627f357" deferrability="7" deleteRule="3" fk-table-ref="TAB48" fkCardinality="7" identifying="false" name="Employee_User_fk" physicalName="employee_user_fk" pk-table-ref="TAB17" pkCardinality="2" updateRule="3" >
+   <relationship id="REL79" populated="true" UUID="452372f8-c664-4755-98e1-138fb627f357" deferrability="7" deleteRule="3" fk-table-ref="TAB48" fkCardinality="7" identifying="false" name="Employee_User_fk" physicalName="Employee_User_fk" pk-table-ref="TAB17" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP80" populated="true" UUID="c67318ba-9e23-4e47-94aa-f8ee0116dc45" fk-column-ref="COL52" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL18" />
    </relationship>
-   <relationship id="REL81" populated="true" UUID="a7215c72-5fb7-4ceb-b341-02109ff4566e" deferrability="7" deleteRule="3" fk-table-ref="TAB55" fkCardinality="7" identifying="false" name="Employee_Actual_fk" physicalName="employee_actual_fk" pk-table-ref="TAB17" pkCardinality="2" updateRule="3" >
+   <relationship id="REL81" populated="true" UUID="a7215c72-5fb7-4ceb-b341-02109ff4566e" deferrability="7" deleteRule="3" fk-table-ref="TAB55" fkCardinality="7" identifying="false" name="Employee_Actual_fk" physicalName="Employee_Actual_fk" pk-table-ref="TAB17" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP82" populated="true" UUID="2743f15f-7b06-4dea-83b8-f7ebe010d528" fk-column-ref="COL58" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL18" />
    </relationship>
-   <relationship id="REL83" populated="true" UUID="ea723d58-348d-4687-aa7c-8f9658fc8845" deferrability="7" deleteRule="3" fk-table-ref="TAB9" fkCardinality="7" identifying="false" name="Client_Project_fk" physicalName="client_project_fk" pk-table-ref="TAB33" pkCardinality="2" updateRule="3" >
+   <relationship id="REL83" populated="true" UUID="ea723d58-348d-4687-aa7c-8f9658fc8845" deferrability="7" deleteRule="3" fk-table-ref="TAB9" fkCardinality="7" identifying="false" name="Client_Project_fk" physicalName="Client_Project_fk" pk-table-ref="TAB33" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP84" populated="true" UUID="abcc06b9-7c3f-4f7c-ba52-d2051d9652d6" fk-column-ref="COL11" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL34" />
    </relationship>
-   <relationship id="REL85" populated="true" UUID="36c7f7b5-7b27-4c1f-8fec-0e824c51aa34" deferrability="7" deleteRule="3" fk-table-ref="TAB1" fkCardinality="7" identifying="false" name="Category_Estimate_fk" physicalName="category_estimate_fk" pk-table-ref="TAB43" pkCardinality="2" updateRule="3" >
+   <relationship id="REL85" populated="true" UUID="36c7f7b5-7b27-4c1f-8fec-0e824c51aa34" deferrability="7" deleteRule="3" fk-table-ref="TAB1" fkCardinality="7" identifying="false" name="Category_Estimate_fk" physicalName="Category_Estimate_fk" pk-table-ref="TAB43" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP86" populated="true" UUID="53abde3f-c2a9-408a-9685-70fdcf79584f" fk-column-ref="COL4" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL44" />
    </relationship>
   </relationships>
  </target-database>
- <ddl-generator type="ca.sqlpower.architect.ddl.MySqlDDLGenerator" allow-connection="false"> </ddl-generator>
+ <ddl-generator type="ca.sqlpower.architect.ddl.MySqlDDLGenerator" allow-connection="true"> </ddl-generator>
  <liquibase-settings useSeparateChangeSets="false" generateId="false" idStart="1"/>
  <create-kettle-job-settings filePath="" jobName="" schemaName="" kettleJoinType="0" savingToFile="true" />
  <play-pen zoom="1.0" viewportX="0" viewportY="10" relationship-style="rectilinear" names-displayLogicalNames="true" showPrimaryTag="true" showForeignTag="true" showAlternateTag="true" columnVisibility="ALL" relationshipLabelVisibility="true">
@@ -304,7 +304,7 @@
   <table-pane table-ref="TAB43" x="76" y="87" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB48" x="805" y="811" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB55" x="92" y="599" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB63" x="769" y="433" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB63" x="774" y="378" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-link relationship-ref="REL73" pkConnection="0.6396396396396397" fkConnection="0.4936708860759494" rLineColor="0x000000" pkLabelText="" fkLabelText="" orientation="33"/>
   <table-link relationship-ref="REL83" pkConnection="0.8790697674418605" fkConnection="0.1091703056768559" rLineColor="0x000000" pkLabelText="" fkLabelText="" orientation="72"/>
   <table-link relationship-ref="REL79" pkConnection="0.5" fkConnection="0.5" rLineColor="0x000000" pkLabelText="" fkLabelText="" orientation="132"/>

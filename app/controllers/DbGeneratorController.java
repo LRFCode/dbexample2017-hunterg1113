@@ -16,12 +16,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class RandomUserController extends Controller
+public class DbGeneratorController extends Controller
 {
     JPAApi jpaApi;
 
     @Inject
-    public RandomUserController(JPAApi jpaApi)
+    public DbGeneratorController(JPAApi jpaApi)
     {
         this.jpaApi = jpaApi;
     }
@@ -48,9 +48,23 @@ public class RandomUserController extends Controller
     @Transactional
     public Result generateDb()
     {
+        Random random = new Random();
+
+        List<Client> clients = jpaApi.em().createQuery("FROM Client c").getResultList();
+
+        for (Client client : clients)
+        {
+            String newZip = client.getZipCode().substring(0,5);
+
+            client.setZipCode(newZip);
+
+            jpaApi.em().persist(client);
+        }
+
         return ok("done");
     }
 }
+
 
 
 

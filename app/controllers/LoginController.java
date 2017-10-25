@@ -1,5 +1,7 @@
 package controllers;
 
+import models.Employee;
+import models.Equipment;
 import models.Password;
 import models.ProjectUser;
 import play.data.DynamicForm;
@@ -39,18 +41,23 @@ public class LoginController extends Controller
         String username = dynamicForm.get("username");
 
         List<ProjectUser> projectUsers = jpaApi.em().createQuery("FROM ProjectUser WHERE username = :username").
-                                         setParameter("username",username).getResultList();
+                setParameter("username", username).getResultList();
 
-        if(projectUsers.size() > 0)
+        if (projectUsers.size() > 0)
         {
-            byte[] hashedPassword = Password.hashPassword(password.toCharArray(),projectUsers.get(0).getSalt());
+            byte[] hashedPassword = Password.hashPassword(password.toCharArray(), projectUsers.get(0).getSalt());
 
-            if (Arrays.equals(hashedPassword,projectUsers.get(0).getPassword()));
+            if (Arrays.equals(hashedPassword, projectUsers.get(0).getPassword()) && projectUsers.get(0).getEmployee().getTitle().equals("Foreman"))
             {
-                return ok(projectUsers.get(0).getUserName() + " logged in");
+                return redirect(routes.ForemanController.getClockInScreen(projectUsers.get(0).getEmployeeId()));
+            }
+            else if (Arrays.equals(hashedPassword, projectUsers.get(0).getPassword()) && projectUsers.get(0).getEmployee().getTitle().equals("Project Manager"))
+            {
+                return redirect(routes.ProjectManagerController.getWelcomeScreen(projectUsers.get(0).getEmployeeId()));
             }
         }
 
-        return ok("error");
+        return ok("Error: username & password combination not found in database. Please try again.");
+
     }
 }

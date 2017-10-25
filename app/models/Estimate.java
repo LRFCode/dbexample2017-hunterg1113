@@ -20,13 +20,14 @@ public class Estimate
     private BigDecimal estimateHours;
     @Column(name = "Photo")
     private byte[] photo;
-
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "contractId")
     private Contract contract;
     @OneToMany(mappedBy = "estimate")
     private List<Actual> actuals;
-
+    @ManyToOne
+    @JoinColumn(name = "categoryId")
+    private Category category;
 
     public int getEstimateId()
     {
@@ -96,6 +97,16 @@ public class Estimate
     public void setActuals(List<Actual> actuals)
     {
         this.actuals = actuals;
+    }
+
+    public Category getCategory()
+    {
+        return category;
+    }
+
+    public void setCategory(Category category)
+    {
+        this.category = category;
     }
 }
 

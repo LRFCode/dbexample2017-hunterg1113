@@ -23,6 +23,10 @@ public class Employee
     private BigDecimal hourlyWage;
     @Column (name = "HireDate")
     private String hireDate;
+    @OneToMany (mappedBy = "employee")
+    private List<ProjectUser> projectUsers;
+    @OneToMany (mappedBy = "employee")
+    private List<Actual> actuals;
 
     public int getEmployeeId()
     {
@@ -82,5 +86,25 @@ public class Employee
     public void setHireDate(String hireDate)
     {
         this.hireDate = hireDate;
+    }
+
+    public List<ProjectUser> getProjectUsers()
+    {
+        return projectUsers;
+    }
+
+    public void setProjectUsers(List<ProjectUser> projectUsers)
+    {
+        this.projectUsers = projectUsers;
+    }
+
+    public List<Actual> getActuals()
+    {
+        return actuals;
+    }
+
+    public void setActuals(List<Actual> actuals)
+    {
+        this.actuals = actuals;
     }
 }

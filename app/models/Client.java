@@ -1,9 +1,8 @@
 package models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "Client")
@@ -28,6 +27,8 @@ public class Client
     private String phone;
     @Column(name = "Email")
     private String email;
+    @OneToMany(mappedBy = "client")
+    private List<Contract> contracts;
 
     public int getClientId()
     {
@@ -57,6 +58,11 @@ public class Client
     public void setFirstName(String firstName)
     {
         this.firstName = firstName;
+    }
+
+    public String getFullName()
+    {
+        return firstName + " " + lastName;
     }
 
     public String getAddress()
@@ -99,6 +105,11 @@ public class Client
         this.zipCode = zipCode;
     }
 
+    public String getFullAddress()
+    {
+        return address + ", " + state + " " + zipCode;
+    }
+
     public String getPhone()
     {
         return phone;
@@ -117,5 +128,15 @@ public class Client
     public void setEmail(String email)
     {
         this.email = email;
+    }
+
+    public List<Contract> getContracts()
+    {
+        return contracts;
+    }
+
+    public void setContracts(List<Contract> contracts)
+    {
+        this.contracts = contracts;
     }
 }

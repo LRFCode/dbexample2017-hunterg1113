@@ -22,7 +22,10 @@ public class Contract
     @Column(name = "Plans")
     private byte[] plans;
     @OneToMany(mappedBy = "contract")
-    private List<Estimate> estimates = new ArrayList<>();
+    private List<Estimate> estimates;
+    @ManyToOne
+    @JoinColumn(name = "clientId")
+    private Client client;
 
     public int getContractId()
     {
@@ -82,5 +85,15 @@ public class Contract
     public void setEstimates(List<Estimate> estimates)
     {
         this.estimates = estimates;
+    }
+
+    public Client getClient()
+    {
+        return client;
+    }
+
+    public void setClient(Client client)
+    {
+        this.client = client;
     }
 }

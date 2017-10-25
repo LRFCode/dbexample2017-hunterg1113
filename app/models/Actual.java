@@ -14,8 +14,8 @@ public class Actual
     private int actualId;
     @Column(name = "EstimateId")
     private int estimateId;
-    @Column(name = "ForemanId")
-    private int foremanId;
+    @Column(name = "EmployeeId")
+    private int employeeId;
     @Column(name = "ActualDate")
     private String actualDate;
     @Column(name = "ActualHours")
@@ -23,6 +23,9 @@ public class Actual
     @ManyToOne
     @JoinColumn(name = "estimateId")
     private Estimate estimate;
+    @ManyToOne
+    @JoinColumn(name = "employeeId")
+    private Employee employee;
 
     public int getActualId()
     {
@@ -44,14 +47,14 @@ public class Actual
         this.estimateId = estimateId;
     }
 
-    public int getForemanId()
+    public int getEmployeeId()
     {
-        return foremanId;
+        return employeeId;
     }
 
-    public void setForemanId(int foremanId)
+    public void setEmployeeId(int employeeId)
     {
-        this.foremanId = foremanId;
+        this.employeeId = employeeId;
     }
 
     public String getActualDate()
@@ -82,5 +85,29 @@ public class Actual
     public void setEstimate(Estimate estimate)
     {
         this.estimate = estimate;
+    }
+
+    public Employee getEmployee()
+    {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee)
+    {
+        this.employee = employee;
+    }
+
+    public String getDifferenceFromEstimate()
+    {
+        BigDecimal x = actualHours.subtract(estimate.getEstimateHours());
+
+        if (x.intValue() >= 0)
+        {
+            return "+" + x.toString();
+        }
+        else
+        {
+            return "-" + x.abs().toString();
+        }
     }
 }
