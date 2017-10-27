@@ -1,4 +1,4 @@
-@(foreman : Employee, client : Client, actuals : List[Actual])
+@(foreman : Employee, client : Client, actuals : List[Actual], crew : List[Employee], equipments : List[Equipment])
 
 <!DOCTYPE html>
 <html>
@@ -13,7 +13,18 @@
 <label>Address: </label> @client.getFullAddress
 <br />
 <br />
-<br />
+<label>Crew: </label>
+<ul>
+    @for(employee <- crew) {
+    <li>@employee.getFullNameTitle</li>
+    }
+</ul>
+<label>Equipment: </label>
+<ul>
+    @for(equipment <- equipments) {
+    <li>@equipment.getEquipmentName</li>
+    }
+</ul>
 <table>
     <tr>
         <th align="left">Category</th>
@@ -32,7 +43,7 @@
     <button type="submit">Clock-Out</button>
 </form>
 
-<form method="get" action="@routes.ForemanController.getClockOutScreen(foreman.getEmployeeId)">
+<form method="get" action="@routes.ForemanController.getUploadPhoto">
     <button type="submit">Upload Images</button>
 </form>
 </body>

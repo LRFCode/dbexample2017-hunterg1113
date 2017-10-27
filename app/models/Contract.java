@@ -17,8 +17,8 @@ public class Contract
     private int clientId;
     @Column(name = "StartDate")
     private String startDate;
-    @Column(name = "CompletionDate")
-    private String completionDate;
+    @Column(name = "Completed")
+    private int completed;
     @Column(name = "Plans")
     private byte[] plans;
     @OneToMany(mappedBy = "contract")
@@ -57,16 +57,6 @@ public class Contract
         this.startDate = startDate;
     }
 
-    public String getCompletionDate()
-    {
-        return completionDate;
-    }
-
-    public void setCompletionDate(String completionDate)
-    {
-        this.completionDate = completionDate;
-    }
-
     public byte[] getPlans()
     {
         return plans;
@@ -95,5 +85,15 @@ public class Contract
     public void setClient(Client client)
     {
         this.client = client;
+    }
+
+    public int getCompleted()
+    {
+        return completed;
+    }
+
+    public void setCompleted(int completed)
+    {
+        this.completed = completed;
     }
 }

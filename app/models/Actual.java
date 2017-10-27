@@ -21,10 +21,10 @@ public class Actual
     @Column(name = "ActualHours")
     private BigDecimal actualHours;
     @ManyToOne
-    @JoinColumn(name = "estimateId")
+    @JoinColumn(name = "estimateId", insertable = false, updatable = false)
     private Estimate estimate;
     @ManyToOne
-    @JoinColumn(name = "employeeId")
+    @JoinColumn(name = "employeeId", insertable = false, updatable = false)
     private Employee employee;
 
     public int getActualId()
@@ -97,17 +97,8 @@ public class Actual
         this.employee = employee;
     }
 
-    public String getDifferenceFromEstimate()
+    public BigDecimal getDifferenceFromEstimate()
     {
-        BigDecimal x = actualHours.subtract(estimate.getEstimateHours());
-
-        if (x.intValue() >= 0)
-        {
-            return "+" + x.toString();
-        }
-        else
-        {
-            return "-" + x.abs().toString();
-        }
+        return actualHours.subtract(estimate.getEstimateHours());
     }
 }

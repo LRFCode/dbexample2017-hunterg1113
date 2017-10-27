@@ -10,6 +10,11 @@ POST    /login                          controllers.LoginController.postLogin
 GET     /crewClockIn/:id                controllers.ForemanController.getClockInScreen(id: Integer)
 POST    /foremanWelcome/:id             controllers.ForemanController.getWelcomeScreen(id : Integer)
 GET     /crewClockOut/:id               controllers.ForemanController.getClockOutScreen(id: Integer)
+POST    /crewClockOut/:id               controllers.ForemanController.postCrewClockOut(id: Integer)
+GET     /uploadImages                   controllers.ForemanController.getUploadPhoto
+POST    /uploadImages                   controllers.ForemanController.postUploadPhoto
+
+GET     /contractPlan/:id               controllers.ForemanController.getPicture(id : Integer)
 
 GET     /projectManagerWelcome/:id      controllers.ProjectManagerController.getWelcomeScreen(id : Integer)
 

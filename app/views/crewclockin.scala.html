@@ -15,20 +15,20 @@
         <tr>
             <td>@employee.getLastName, @employee.getFirstName</td>
             <td>
-                <select>
-                    <option></option>
-                    <option>7:00 AM</option>
-                    <option>7:15 AM</option>
-                    <option>7:30 AM</option>
-                    <option>7:45 AM</option>
-                    <option>8:00 AM</option>
-                    <option>8:15 AM</option>
-                    <option>8:30 AM</option>
-                    <option>8:45 AM</option>
-                    <option>9:00 AM</option>
-                    <option>9:15 AM</option>
-                    <option>9:30 AM</option>
-                    <option>9:45 AM</option>
+                <select name="clockintime@employee.getEmployeeId" id="clockintime@employee.getEmployeeId" >
+                    <option selected value="notcrew"></option>
+                    <option value="07:00:00">7:00 AM</option>
+                    <option value="07:15:00">7:15 AM</option>
+                    <option value="07:30:00">7:30 AM</option>
+                    <option value="07:45:00">7:45 AM</option>
+                    <option value="08:00:00">8:00 AM</option>
+                    <option value="08:15:00">8:15 AM</option>
+                    <option value="08:30:00">8:30 AM</option>
+                    <option value="08:45:00">8:45 AM</option>
+                    <option value="09:00:00">9:00 AM</option>
+                    <option value="09:15:00">9:15 AM</option>
+                    <option value="09:30:00">9:30 AM</option>
+                    <option value="09:45:00">9:45 AM</option>
                 </select>
             </td>
             <td></td>
@@ -44,7 +44,7 @@
         @for(equipment <- equipments) {
         <tr>
             <td>@equipment.getEquipmentName</td>
-            <td align="right"><input type="checkbox"></td>
+            <td align="right"><input type="checkbox" name="equipment@equipment.getEquipmentId" id="equipment@equipment.getEquipmentId"></td>
         </tr>
         }
     </table>
@@ -53,4 +53,3 @@
 </form>
 </body>
 </html>
-

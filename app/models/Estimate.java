@@ -18,15 +18,15 @@ public class Estimate
     private int categoryId;
     @Column(name = "EstimateHours")
     private BigDecimal estimateHours;
-    @Column(name = "Photo")
-    private byte[] photo;
+    @Column(name = "CompletionDate")
+    private String completionDate;
     @ManyToOne
-    @JoinColumn(name = "contractId")
+    @JoinColumn(name = "contractId", insertable = false, updatable = false)
     private Contract contract;
     @OneToMany(mappedBy = "estimate")
     private List<Actual> actuals;
     @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "categoryId", insertable = false, updatable = false)
     private Category category;
 
     public int getEstimateId()
@@ -69,16 +69,6 @@ public class Estimate
         this.estimateHours = estimateHours;
     }
 
-    public byte[] getPhoto()
-    {
-        return photo;
-    }
-
-    public void setPhoto(byte[] photo)
-    {
-        this.photo = photo;
-    }
-
     public Contract getContract()
     {
         return contract;
@@ -107,6 +97,16 @@ public class Estimate
     public void setCategory(Category category)
     {
         this.category = category;
+    }
+
+    public String getCompletionDate()
+    {
+        return completionDate;
+    }
+
+    public void setCompletionDate(String completionDate)
+    {
+        this.completionDate = completionDate;
     }
 }
 

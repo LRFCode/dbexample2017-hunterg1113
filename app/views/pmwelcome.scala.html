@@ -30,16 +30,16 @@
         <td rowspan="10" valign="top">@foreman.getLastName</td>
         <td rowspan="10" valign="top">@foreman.getActuals.get(0).getEstimate.getContract.getClient.getFullAddress()</td>
         <td rowspan="10" valign="top"></td>
-            @for(actual <- foreman.getActuals) {
-        <tr>
-            <td>0@actual.getEstimate.getCategoryId @actual.getEstimate.getCategory.getCategoryName</td>
-            <td align="right">@actual.getEstimate.getEstimateHours</td>
-            <td align="right">@actual.getActualHours</td>
-            <td align="right">@actual.getDifferenceFromEstimate</td>
-        </tr>
+        @for(actual <- foreman.getActuals) {
+    <tr>
+        <td>0@actual.getEstimate.getCategoryId @actual.getEstimate.getCategory.getCategoryName</td>
+        <td align="right">@actual.getEstimate.getEstimateHours</td>
+        <td align="right">@actual.getActualHours</td>
+        <td align="right">@actual.getDifferenceFromEstimate</td>
+    </tr>
     }
     </tr>
-    <tr><td height="50"></td></tr>
+    <tr><td><button type="submit">Get Plans</button> </td></tr>
     }
 </table>
 </body>

@@ -8,26 +8,25 @@
 
 <body>
 <h3>Crew Clock-Out</h3>
-<form method="post" action="@routes.ForemanController.getWelcomeScreen(foreman.getEmployeeId)">
+<form method="post" action="@routes.ForemanController.postCrewClockOut(foreman.getEmployeeId)">
     <table>
         @for(employee <- employees) {
         <tr>
             <td>@employee.getLastName, @employee.getFirstName</td>
             <td>
-                <select>
-                    <option></option>
-                    <option>4:00 PM</option>
-                    <option>4:15 PM</option>
-                    <option>4:30 PM</option>
-                    <option>4:45 PM</option>
-                    <option>5:00 PM</option>
-                    <option>5:15 PM</option>
-                    <option>5:30 PM</option>
-                    <option>5:45 PM</option>
-                    <option>6:00 PM</option>
-                    <option>6:15 PM</option>
-                    <option>6:30 PM</option>
-                    <option>6:45 PM</option>
+                <select name="clockouttime@employee.getEmployeeId" id="clockouttime@employee.getEmployeeId" required>
+                    <option value="16:00:00">4:00 PM</option>
+                    <option value="16:15:00">4:15 PM</option>
+                    <option value="16:30:00">4:30 PM</option>
+                    <option value="16:45:00">4:45 PM</option>
+                    <option value="17:00:00">5:00 PM</option>
+                    <option value="17:15:00">5:15 PM</option>
+                    <option value="17:30:00">5:30 PM</option>
+                    <option value="17:45:00">5:45 PM</option>
+                    <option value="18:00:00">6:00 PM</option>
+                    <option value="18:15:00">6:15 PM</option>
+                    <option value="18:30:00">6:30 PM</option>
+                    <option value="18:45:00">6:45 PM</option>
                 </select>
             </td>
             <td></td>
@@ -43,13 +42,12 @@
         @for(equipment <- equipments) {
         <tr>
             <td>@equipment.getEquipmentName</td>
-            <td><input type="text" placeholder="Enter Hours" name="equipmenthours" required></td>
+            <td><input type="text" placeholder="Enter Hours" name="equipment@equipment.getEquipmentId" id="equipment@equipment.getEquipmentId" required></td>
         </tr>
         }
     </table>
     <br />
     <button type="submit">Save</button>
-</form>
+    </form>
 </body>
 </html>
-

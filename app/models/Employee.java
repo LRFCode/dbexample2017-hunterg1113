@@ -23,6 +23,8 @@ public class Employee
     private BigDecimal hourlyWage;
     @Column (name = "HireDate")
     private String hireDate;
+    @Column (name = "LastClockIn")
+    private String lastClockIn;
     @OneToMany (mappedBy = "employee")
     private List<ProjectUser> projectUsers;
     @OneToMany (mappedBy = "employee")
@@ -58,6 +60,11 @@ public class Employee
         this.firstName = firstName;
     }
 
+    public String getFullNameTitle()
+    {
+        return firstName + " " + lastName + ", " + title;
+    }
+
     public String getTitle()
     {
         return title;
@@ -86,6 +93,16 @@ public class Employee
     public void setHireDate(String hireDate)
     {
         this.hireDate = hireDate;
+    }
+
+    public String getLastClockIn()
+    {
+        return lastClockIn;
+    }
+
+    public void setLastClockIn(String lastClockIn)
+    {
+        this.lastClockIn = lastClockIn;
     }
 
     public List<ProjectUser> getProjectUsers()

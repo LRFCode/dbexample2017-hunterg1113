@@ -2,7 +2,6 @@ package models;
 
 import javax.persistence.*;
 import javax.persistence.Id;
-import java.util.List;
 
 @Entity
 @Table(name = "User")
@@ -20,8 +19,9 @@ public class ProjectUser
     @Column(name = "Salt")
     private byte[] salt;
     @ManyToOne
-    @JoinColumn(name = "employeeId")
+    @JoinColumn(name = "employeeId", insertable = false, updatable = false)
     private Employee employee;
+
 
     public int getUserId()
     {

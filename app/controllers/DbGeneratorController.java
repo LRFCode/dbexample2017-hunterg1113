@@ -2,6 +2,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.*;
+import play.api.libs.iteratee.Cont;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
@@ -37,7 +38,7 @@ public class DbGeneratorController extends Controller
             ObjectMapper objectMapper = new ObjectMapper();
             RandomUser randomUser = objectMapper.readValue(url, RandomUser.class);
 
-            return ok(views.html.randomusers.render(randomUser.getResults()));
+            return ok("done");
 
         } catch (Exception e)
         {
@@ -48,24 +49,32 @@ public class DbGeneratorController extends Controller
     @Transactional
     public Result generateDb()
     {
-        Random random = new Random();
+        List<ProjectUser> users = jpaApi.em().createQuery("FROM ProjectUser u").getResultList();
 
-        List<Client> clients = jpaApi.em().createQuery("FROM Client c").getResultList();
-
-        for (Client client : clients)
+        for (ProjectUser projectUser : users)
         {
-            String newZip = client.getZipCode().substring(0,5);
 
-            client.setZipCode(newZip);
+            try
+            {
+                String password = "password";
 
-            jpaApi.em().persist(client);
+                byte[] salt = Password.getNewSalt();
+                byte[] hashedPassword = Password.hashPassword(password.toCharArray(), salt);
+
+                projectUser.setSalt(salt);
+                projectUser.setPassword(hashedPassword);
+            } catch (Exception e)
+            {
+                return ok("error");
+            }
+
+            jpaApi.em().persist(projectUser);
+
         }
 
         return ok("done");
     }
 }
-
-
 
 
 
@@ -405,6 +414,35 @@ for (Employee employee : employees)
 }
 
 
+return ok("done");
+}
+
+//Generate add days...
+List<Contract> contracts = jpaApi.em().createQuery("FROM Contract c WHERE contractId NOT IN (3,4,11)").getResultList();
+
+for (Contract contract : contracts)
+{
+    String day = contract.getStartDate();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+    try
+    {
+        Date date = sdf.parse(day);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, 9);
+        date = cal.getTime();
+        String newDay = sdf.format(date);
+
+        contract.setCompletionDate(newDay);
+
+        jpaApi.em().persist(contract);
+
+    }catch(Exception e)
+    {
+        return ok("error");
+    }
+}
 return ok("done");
 }
 
