@@ -17,7 +17,7 @@ public class Equipment
     @Column(name = "EquipmentHours")
     private Integer equipmentHours;
     @Column(name = "ContractId")
-    private int contractId;
+    private Integer contractId;
 
     public int getEquipmentId()
     {
@@ -49,12 +49,12 @@ public class Equipment
         this.equipmentHours = equipmentHours;
     }
 
-    public int getContractId()
+    public Integer getContractId()
     {
         return contractId;
     }
 
-    public void setContractId(int contractId)
+    public void setContractId(Integer contractId)
     {
         this.contractId = contractId;
     }

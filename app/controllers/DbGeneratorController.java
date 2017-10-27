@@ -15,6 +15,8 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DbGeneratorController extends Controller
@@ -70,6 +72,39 @@ public class DbGeneratorController extends Controller
 
             jpaApi.em().persist(projectUser);
 
+        }
+
+        return ok("done");
+    }
+
+    @Transactional
+    public Result resetDb()
+    {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDate localDate = LocalDate.now();
+        String today = dtf.format(localDate);
+
+        List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE actualDate = :today").setParameter("today", today).getResultList();
+
+        for(Actual actual : actuals)
+        {
+            jpaApi.em().remove(actual);
+        }
+
+        List<Equipment> equipmentList = jpaApi.em().createQuery("FROM Equipment e").getResultList();
+
+        for(Equipment equipment : equipmentList)
+        {
+            equipment.setContractId(null);
+            jpaApi.em().persist(equipment);
+        }
+
+        List<Employee> employees = jpaApi.em().createQuery("FROM Employee").getResultList();
+
+        for(Employee employee : employees)
+        {
+            employee.setLastClockIn(null);
+            jpaApi.em().persist(employee);
         }
 
         return ok("done");

@@ -39,7 +39,7 @@
     </tr>
     }
 </table>
-<form method="get" action="@routes.ForemanController.getClockOutScreen(foreman.getEmployeeId)">
+<form method="get" action="@routes.ForemanController.getClockOutScreen(foreman.getEmployeeId, actuals.get(0).getEstimate.getContractId)">
     <button type="submit">Clock-Out</button>
 </form>
 

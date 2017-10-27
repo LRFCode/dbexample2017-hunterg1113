@@ -1,4 +1,4 @@
-@(foreman : Employee, employees : List[Employee], equipments : List[Equipment])
+@(foreman : Employee, employees : List[Employee], equipments : List[Equipment], contracts : List[Contract])
 
 <!DOCTYPE html>
 <html>
@@ -8,14 +8,31 @@
 
 <body>
 <h2>Welcome, @foreman.getFirstName</h2>
-<h3>Crew Clock-In</h3>
 <form method="post" action="@routes.ForemanController.getWelcomeScreen(foreman.getEmployeeId)">
+
+    <h3>Project</h3>
+    <table>
+        <tr>
+            <td><select name="contract" id="contract">
+                @for(contract <- contracts) {
+                <option value="@contract.getContractId">Contract @contract.getContractId: @contract.getClient.getLastName,
+                    @contract.getClient.getLastName
+                </option>
+                }
+            </select>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+
+    <h3>Crew Clock-In</h3>
     <table>
         @for(employee <- employees) {
         <tr>
             <td>@employee.getLastName, @employee.getFirstName</td>
             <td>
-                <select name="clockintime@employee.getEmployeeId" id="clockintime@employee.getEmployeeId" >
+                <select name="clockintime@employee.getEmployeeId" id="clockintime@employee.getEmployeeId">
                     <option selected value="notcrew"></option>
                     <option value="07:00:00">7:00 AM</option>
                     <option value="07:15:00">7:15 AM</option>
@@ -35,6 +52,9 @@
         </tr>
         }
     </table>
+
+    <br />
+
     <h3>Equipment Check-Out</h3>
     <table>
         <tr>
@@ -44,11 +64,12 @@
         @for(equipment <- equipments) {
         <tr>
             <td>@equipment.getEquipmentName</td>
-            <td align="right"><input type="checkbox" name="equipment@equipment.getEquipmentId" id="equipment@equipment.getEquipmentId"></td>
+            <td align="right"><input type="checkbox" name="equipment@equipment.getEquipmentId"
+                                     id="equipment@equipment.getEquipmentId"></td>
         </tr>
         }
     </table>
-    <br />
+    <br/>
     <button type="submit">Save</button>
 </form>
 </body>

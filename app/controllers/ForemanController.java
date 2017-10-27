@@ -2,6 +2,10 @@ package controllers;
 
 import com.google.common.io.Files;
 import models.*;
+import org.joda.time.DateTime;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
+import org.joda.time.format.DateTimeFormat;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.db.jpa.JPAApi;
@@ -12,6 +16,7 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,9 +43,11 @@ public class ForemanController extends Controller
 
         List<Equipment> equipments = jpaApi.em().createQuery("FROM Equipment e").getResultList();
 
-        createEntriesInActuals(id);
+        List<Contract> contracts = jpaApi.em().createQuery("FROM Contract c WHERE completed = 0").getResultList();
 
-        return ok(views.html.crewclockin.render(foreman, employees, equipments));
+        createEntriesInDb(id);
+
+        return ok(views.html.crewclockin.render(foreman, employees, equipments, contracts));
     }
 
     @Transactional
@@ -56,32 +63,20 @@ public class ForemanController extends Controller
 
         List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id AND actualDate = :actualDate").setParameter("id", id).setParameter("actualDate", actualDate).getResultList();
 
-
         DynamicForm dynamicForm = formFactory.form().bindFromRequest();
-
         List<Employee> crew = createCrewAndUpdateInDb(dynamicForm, id);
-
-        List<Equipment> crewEquipment = createCrewEquipmentAndPutInSession(dynamicForm);
-
-        System.out.println("Crew Ids: " + session().get("crew") + " EquipmentIds: " + session().get("equipment"));
-
+        List<Equipment> crewEquipment = createCrewEquipmentAndUpdateInDb(dynamicForm, id);
 
         return ok(views.html.foremanwelcome.render(foreman, client, actuals, crew, crewEquipment));
     }
 
     @Transactional
-    public Result getClockOutScreen(int id)
+    public Result getClockOutScreen(int id, int contractId)
     {
         Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
 
-        List<Employee> crew = getCrewFromSession();
-
-        List<Equipment> crewEquipment = getCrewEquipmentFromSession();
-
-        session().remove("crew");
-        session().remove("equipment");
-
-        System.out.println("Crew Ids: " + session().get("crew") + " EquipmentIds: " + session().get("equipment"));
+        List<Employee> crew = getCrewFromDb(contractId);
+        List<Equipment> crewEquipment = getCrewEquipmentFromDb(contractId);
 
         return ok(views.html.crewclockout.render(foreman, crew, crewEquipment));
     }
@@ -93,7 +88,7 @@ public class ForemanController extends Controller
 
         DynamicForm dynamicForm = formFactory.form().bindFromRequest();
 
-        List<Employee> crew = getCrewFromForm(dynamicForm);
+        BigDecimal hours = getCrewHoursFromForm(dynamicForm);
         List<Equipment> crewEquipment = getCrewEquipmentFromForm(dynamicForm);
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -104,13 +99,13 @@ public class ForemanController extends Controller
 
         List<Actual> actuals = jpaApi.em().createQuery("SELECT a FROM Actual a JOIN Estimate e ON e.estimateId = a.estimateId JOIN Contract c ON e.contractId = c.contractId WHERE c.contractId = :contractId", Actual.class).setParameter("contractId", contractId).getResultList();
 
-        for(Actual actual : actuals)
+        for (Actual actual : actuals)
         {
             actual.setEmployeeId(id);
             jpaApi.em().persist(actual);
         }
 
-        return ok("saved");
+        return ok("" + hours);
     }
 
     @Transactional
@@ -162,7 +157,7 @@ public class ForemanController extends Controller
     }
 
     @Transactional
-    public void createEntriesInActuals(int id)
+    public void createEntriesInDb(int id)
     {
         Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setMaxResults(1).setParameter("id", id).getSingleResult();
         int nextActualId = jpaApi.em().createQuery("FROM Actual a ORDER BY actualId DESC", Actual.class).setMaxResults(1).getSingleResult().getActualId() + 1;
@@ -197,7 +192,6 @@ public class ForemanController extends Controller
         String today = dtf.format(localDate);
 
         List<Employee> crew = new ArrayList<>();
-        List<String> crewIds = new ArrayList<>();
 
         List<Employee> employees = jpaApi.em().createQuery("FROM Employee e WHERE NOT title = 'Project Manager'").getResultList();
 
@@ -207,11 +201,10 @@ public class ForemanController extends Controller
 
             if (!dynamicForm.get(employeeSearch).equals("notcrew"))
             {
+                crew.add(employee);
+
                 String time = dynamicForm.get(employeeSearch);
                 employee.setLastClockIn(today + " " + time);
-
-                crew.add(employee);
-                crewIds.add("" + employee.getEmployeeId());
 
                 jpaApi.em().persist(employee);
             }
@@ -228,19 +221,17 @@ public class ForemanController extends Controller
             jpaApi.em().persist(dbActuals.get(i));
         }
 
-        session().put("crew", String.join(" ", crewIds));
-
         return crew;
     }
 
     @Transactional
-    public List<Equipment> createCrewEquipmentAndPutInSession(DynamicForm dynamicForm)
+    public List<Equipment> createCrewEquipmentAndUpdateInDb(DynamicForm dynamicForm, int id)
     {
+        int contractId = Integer.parseInt(dynamicForm.get("contract"));
+
         List<Equipment> equipments = jpaApi.em().createQuery("FROM Equipment e").getResultList();
 
         List<Equipment> crewEquipment = new ArrayList<>();
-
-        List<String> equipIds = new ArrayList<>();
 
         for (Equipment equipment : equipments)
         {
@@ -249,71 +240,52 @@ public class ForemanController extends Controller
             if (dynamicForm.get(equipmentSearch) != null)
             {
                 crewEquipment.add(equipment);
-                equipIds.add("" + equipment.getEquipmentId());
+                equipment.setContractId(contractId);
+
+                jpaApi.em().persist(equipment);
             }
         }
-
-        session().put("equipment", String.join(" ", equipIds));
 
         return crewEquipment;
     }
 
     @Transactional
-    public List<Employee> getCrewFromSession()
+    public List<Employee> getCrewFromDb(int contractId)
     {
-        String crewIds = session().get("crew");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDate localDate = LocalDate.now();
+        String today = dtf.format(localDate);
 
-        String[] ids = crewIds.trim().split(" ");
-
-        List<Employee> employees = jpaApi.em().createQuery("FROM Employee e WHERE NOT title = 'Project Manager'").getResultList();
+        List<EmployeeId> employeeIds = jpaApi.em().createNativeQuery("SELECT DISTINCT(a.employeeId) FROM Contract c JOIN Estimate e ON c.ContractId = e.ContractId JOIN Actual a ON a.EstimateId = e.EstimateId WHERE a.ActualDate = :today AND c.ContractId = :contractId", EmployeeId.class).setParameter("contractId", contractId).setParameter("today", today).getResultList();
 
         List<Employee> crew = new ArrayList<>();
 
-        for (Employee employee : employees)
+        for (EmployeeId employeeId : employeeIds)
         {
-            for (int i = 0; i < ids.length; i++)
-            {
-                if (ids[i].equals("" + employee.getEmployeeId()))
-                {
-                    crew.add(employee);
-                }
-            }
+            int x = employeeId.getEmployeeId();
+
+            Employee employee = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :employeeId", Employee.class).setParameter("employeeId", x).getSingleResult();
+
+            crew.add(employee);
         }
 
         return crew;
     }
 
     @Transactional
-    public List<Equipment> getCrewEquipmentFromSession()
+    public List<Equipment> getCrewEquipmentFromDb(int contractId)
     {
-        String equipIds = session().get("equipment");
-
-        String[] equipIdsArray = equipIds.trim().split(" ");
-
-        List<Equipment> equipments = jpaApi.em().createQuery("FROM Equipment e").getResultList();
-
-        List<Equipment> crewEquipment = new ArrayList<>();
-
-        for (Equipment equipment : equipments)
-        {
-            for (int i = 0; i < equipIdsArray.length; i++)
-            {
-                if (equipIdsArray[i].equals("" + equipment.getEquipmentId()))
-                {
-                    crewEquipment.add(equipment);
-                }
-            }
-        }
+        List<Equipment> crewEquipment = jpaApi.em().createQuery("FROM Equipment e WHERE contractId = :contractId").setParameter("contractId", contractId).getResultList();
 
         return crewEquipment;
     }
 
     @Transactional
-    List<Employee> getCrewFromForm(DynamicForm dynamicForm)
+    public BigDecimal getCrewHoursFromForm(DynamicForm dynamicForm)
     {
         List<Employee> employees = jpaApi.em().createQuery("FROM Employee e WHERE NOT title = 'Project Manager'").getResultList();
 
-        List<Employee> crew = new ArrayList<>();
+        BigDecimal crewHours = BigDecimal.ZERO;
 
         for (Employee employee : employees)
         {
@@ -321,11 +293,24 @@ public class ForemanController extends Controller
 
             if (dynamicForm.get(employeeSearch) != null)
             {
-                crew.add(employee);
+                DateTime startTime = DateTime.parse(employee.getLastClockIn(), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+
+                String time = employee.getLastClockIn().substring(0, 11) + dynamicForm.get(employeeSearch);
+
+                DateTime stopTime = DateTime.parse(time, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+
+                String minutes = "" + Minutes.minutesBetween(startTime, stopTime).getMinutes();
+
+                BigDecimal employeeMins = new BigDecimal(minutes);
+                BigDecimal hourMins = new BigDecimal("60");
+
+                BigDecimal employeeHours = employeeMins.divide(hourMins);
+
+                crewHours = crewHours.add(employeeHours);
             }
         }
 
-        return crew;
+        return crewHours;
     }
 
     @Transactional
