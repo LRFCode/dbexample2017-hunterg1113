@@ -3,7 +3,6 @@ package controllers;
 import com.google.common.io.Files;
 import models.*;
 import org.joda.time.DateTime;
-import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import play.data.DynamicForm;
@@ -45,9 +44,11 @@ public class ForemanController extends Controller
 
         List<Contract> contracts = jpaApi.em().createQuery("FROM Contract c WHERE completed = 0").getResultList();
 
+        int contractId = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :employeeId ORDER BY actualDate DESC", Actual.class).setParameter("employeeId", id).setMaxResults(1).getSingleResult().getEstimate().getContractId();
+
         createEntriesInDb(id);
 
-        return ok(views.html.crewclockin.render(foreman, employees, equipments, contracts));
+        return ok(views.html.crewclockin.render(foreman, employees, equipments, contracts, contractId));
     }
 
     @Transactional
@@ -89,7 +90,9 @@ public class ForemanController extends Controller
         DynamicForm dynamicForm = formFactory.form().bindFromRequest();
 
         BigDecimal hours = getCrewHoursFromForm(dynamicForm);
-        List<Equipment> crewEquipment = getCrewEquipmentFromForm(dynamicForm);
+        String crewHours = hours.toString();
+
+        updateCrewEquipmentInDb(dynamicForm);
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate = LocalDate.now();
@@ -97,7 +100,7 @@ public class ForemanController extends Controller
 
         int contractId = jpaApi.em().createQuery("FROM Actual a WHERE actualDate = :today AND employeeId = :id", Actual.class).setParameter("id", id).setParameter("today", today).setMaxResults(1).getSingleResult().getEstimate().getContractId();
 
-        List<Actual> actuals = jpaApi.em().createQuery("SELECT a FROM Actual a JOIN Estimate e ON e.estimateId = a.estimateId JOIN Contract c ON e.contractId = c.contractId WHERE c.contractId = :contractId", Actual.class).setParameter("contractId", contractId).getResultList();
+        List<Actual> actuals = jpaApi.em().createQuery("SELECT a FROM Actual a JOIN Estimate e ON e.estimateId = a.estimateId JOIN Contract c ON e.contractId = c.contractId WHERE c.contractId = :contractId AND a.actualDate = :today", Actual.class).setParameter("contractId", contractId).setParameter("today", today).getResultList();
 
         for (Actual actual : actuals)
         {
@@ -105,7 +108,47 @@ public class ForemanController extends Controller
             jpaApi.em().persist(actual);
         }
 
-        return ok("" + hours);
+        return ok(views.html.categoryclockout.render(foreman, crewHours, actuals));
+    }
+
+    @Transactional
+    public Result postSummaryScreen(int id)
+    {
+        Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
+
+        DynamicForm dynamicForm = formFactory.form().bindFromRequest();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.now();
+        String today = dtf.format(localDate);
+
+        int contractId = jpaApi.em().createQuery("FROM Actual a WHERE actualDate = :today AND employeeId = :id", Actual.class).setParameter("id", id).setParameter("today", today).setMaxResults(1).getSingleResult().getEstimate().getContractId();
+
+        List<Actual> actuals = jpaApi.em().createQuery("SELECT a FROM Actual a JOIN Estimate e ON e.estimateId = a.estimateId JOIN Contract c ON e.contractId = c.contractId WHERE c.contractId = :contractId AND a.actualDate = :today", Actual.class).setParameter("contractId", contractId).setParameter("today", today).getResultList();
+
+        List<Actual> dailyActuals = new ArrayList<>();
+
+        for(Actual actual : actuals)
+        {
+            String search = "category" + actual.getEstimate().getCategoryId();
+
+            if (!dynamicForm.get(search).equals(""))
+            {
+                String hours = dynamicForm.get(search);
+
+                BigDecimal dailyHours = new BigDecimal(hours);
+
+                actual.setActualHours(actual.getActualHours().add(dailyHours));
+
+                dailyActuals.add(actual);
+
+                jpaApi.em().persist(actual);
+            }
+        }
+
+        List<Estimate> estimates = jpaApi.em().createQuery("FROM Estimate e WHERE contractId = :contractId").setParameter("contractId", contractId).getResultList();
+
+        return ok(views.html.foremandailysummary.render(foreman, dailyActuals));
     }
 
     @Transactional
@@ -162,6 +205,7 @@ public class ForemanController extends Controller
         Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setMaxResults(1).setParameter("id", id).getSingleResult();
         int nextActualId = jpaApi.em().createQuery("FROM Actual a ORDER BY actualId DESC", Actual.class).setMaxResults(1).getSingleResult().getActualId() + 1;
         String actualDate = actual.getActualDate();
+
         List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id AND actualDate = :actualDate").setParameter("id", id).setParameter("actualDate", actualDate).getResultList();
 
         for (Actual actual1 : actuals)
@@ -173,7 +217,7 @@ public class ForemanController extends Controller
             String today = dtf.format(localDate);
 
             newActual.setActualDate(today);
-            newActual.setActualHours(null);
+            newActual.setActualHours(actual1.getActualHours());
             newActual.setActualId(nextActualId);
             newActual.setEstimateId(actual1.getEstimateId());
             newActual.setEmployeeId(id);
@@ -314,7 +358,7 @@ public class ForemanController extends Controller
     }
 
     @Transactional
-    List<Equipment> getCrewEquipmentFromForm(DynamicForm dynamicForm)
+    public void updateCrewEquipmentInDb(DynamicForm dynamicForm)
     {
         List<Equipment> equipments = jpaApi.em().createQuery("FROM Equipment e").getResultList();
 
@@ -327,8 +371,9 @@ public class ForemanController extends Controller
             if (dynamicForm.get(equipmentSearch) != null)
             {
                 crewEquipment.add(equipment);
+                equipment.setEquipmentHours(Integer.parseInt(dynamicForm.get(equipmentSearch)));
+                jpaApi.em().persist(equipment);
             }
         }
-        return crewEquipment;
     }
 }

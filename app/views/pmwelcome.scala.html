@@ -23,15 +23,16 @@
         <th align="left">Category</th>
         <th align="right">Estimate</th>
         <th align="right">Actual</th>
+        <th align="right">Difference</th>
     </tr>
     @for(foreman <- foremen) {
     <tr>
         <td rowspan="10" valign="top">@foreman.getActuals.get(0).getEstimate.getContract.getClient.getFullName</td>
         <td rowspan="10" valign="top">@foreman.getLastName</td>
         <td rowspan="10" valign="top">@foreman.getActuals.get(0).getEstimate.getContract.getClient.getFullAddress()</td>
-        <td rowspan="10" valign="top"></td>
         @for(actual <- foreman.getActuals) {
     <tr>
+        <td></td>
         <td>0@actual.getEstimate.getCategoryId @actual.getEstimate.getCategory.getCategoryName</td>
         <td align="right">@actual.getEstimate.getEstimateHours</td>
         <td align="right">@actual.getActualHours</td>
@@ -39,8 +40,21 @@
     </tr>
     }
     </tr>
-    <tr><td><button type="submit">Get Plans</button> </td></tr>
+    <tr>
+        <form method="get" action="@routes.ProjectManagerController.getPlan(foreman.getEmployeeId)" target="_blank">
+            <td>
+                <button type="submit">Get Plans</button>
+            </td>
+        </form>
+    </tr>
     }
+    <tr>
+        <form method="get" action="@routes.ProjectManagerController.newContract">
+            <td>
+                <button type="submit">New Contract</button>
+            </td>
+        </form>
+    </tr>
 </table>
 </body>
 </html>

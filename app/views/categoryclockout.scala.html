@@ -1,0 +1,30 @@
+@(foreman : Employee, hours : String, actuals : List[Actual])
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Category Hours</title>
+</head>
+
+<body>
+<h3>Job Category Hours</h3>
+<label>Hours to assign: </label>@hours
+<br />
+<form method="post" action="@routes.ForemanController.postSummaryScreen(foreman.getEmployeeId)">
+    <table>
+        <tr>
+            <th align="left">Category</th>
+            <th align="right">Add Hours</th>
+        </tr>
+        @for(actual <- actuals) {
+        <tr>
+            <td>@actual.getEstimate.getCategory.getCategoryName</td>
+            <td><input type="text" name="category@actual.getEstimate.getCategoryId" id="category@actual.getEstimate.getCategoryId"></td>
+        </tr>
+        }
+    </table>
+    <button type="submit">Save</button>
+</form>
+</script>
+</body>
+</html>

@@ -42,7 +42,7 @@
         @for(equipment <- equipments) {
         <tr>
             <td>@equipment.getEquipmentName</td>
-            <td><input type="text" placeholder="Enter Hours" name="equipment@equipment.getEquipmentId" id="equipment@equipment.getEquipmentId" required></td>
+            <td><input type="text" placeholder=">= @equipment.getEquipmentHours" name="equipment@equipment.getEquipmentId" id="equipment@equipment.getEquipmentId" required></td>
         </tr>
         }
     </table>

@@ -26,6 +26,8 @@ public class Contract
     @ManyToOne
     @JoinColumn(name = "clientId")
     private Client client;
+    @OneToMany(mappedBy = "contract")
+    private List<Equipment> equipments;
 
     public int getContractId()
     {
@@ -95,5 +97,15 @@ public class Contract
     public void setCompleted(int completed)
     {
         this.completed = completed;
+    }
+
+    public List<Equipment> getEquipments()
+    {
+        return equipments;
+    }
+
+    public void setEquipments(List<Equipment> equipments)
+    {
+        this.equipments = equipments;
     }
 }

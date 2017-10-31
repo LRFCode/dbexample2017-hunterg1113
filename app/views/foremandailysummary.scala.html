@@ -1,0 +1,30 @@
+@(foreman : Employee, dailyActuals : List[Actual])
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Summary</title>
+</head>
+
+<body>
+<h3>Daily Summary</h3>
+<br />
+<form method="post">
+    <table>
+        <tr>
+            <th align="left">Category</th>
+            <th align="right">Estimate Hours</th>
+            <th align="right">Actual Hours</th>
+        </tr>
+        @for(actual <- dailyActuals) {
+        <tr>
+            <td>@actual.getEstimate.getCategory.getCategoryName</td>
+            <td>@actual.getEstimate.getEstimateHours</td>
+            <td>@actual.getActualHours</td>
+        </tr>
+        }
+    </table>
+    <button type="submit">Logout</button>
+</form>
+</body>
+</html>

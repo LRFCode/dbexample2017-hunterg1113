@@ -1,9 +1,7 @@
 package models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "Equipment")
@@ -18,6 +16,9 @@ public class Equipment
     private Integer equipmentHours;
     @Column(name = "ContractId")
     private Integer contractId;
+    @ManyToOne
+    @JoinColumn(name = "contractId")
+    private Contract contract;
 
     public int getEquipmentId()
     {
@@ -57,5 +58,15 @@ public class Equipment
     public void setContractId(Integer contractId)
     {
         this.contractId = contractId;
+    }
+
+    public Contract getContract()
+    {
+        return contract;
+    }
+
+    public void setContract(Contract contract)
+    {
+        this.contract = contract;
     }
 }

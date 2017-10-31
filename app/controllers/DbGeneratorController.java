@@ -51,36 +51,55 @@ public class DbGeneratorController extends Controller
     @Transactional
     public Result generateDb()
     {
-        List<ProjectUser> users = jpaApi.em().createQuery("FROM ProjectUser u").getResultList();
-
-        for (ProjectUser projectUser : users)
+        try
         {
+            URL url = new URL("https://randomuser.me/api/?nat=us&results=100");
+            url.openConnection();
 
-            try
+            ObjectMapper objectMapper = new ObjectMapper();
+            RandomUser randomUser = objectMapper.readValue(url, RandomUser.class);
+
+            List<User> users = randomUser.getResults();
+
+            int x = 1;
+
+            for (User user : users)
             {
-                String password = "password";
+                Random random = new Random();
+                Client client = new Client();
 
-                byte[] salt = Password.getNewSalt();
-                byte[] hashedPassword = Password.hashPassword(password.toCharArray(), salt);
+                client.setFirstName(user.getName().getFirst());
+                client.setLastName(user.getName().getLast());
+                client.setAddress(user.getLocation().getStreet());
+                client.setCity("Little Rock");
+                client.setZipCode("7220" + random.nextInt(10));
+                client.setEmail(user.getEmail());
+                client.setClientId(x);
+                client.setState("AR");
 
-                projectUser.setSalt(salt);
-                projectUser.setPassword(hashedPassword);
-            } catch (Exception e)
-            {
-                return ok("error");
+                client.setPhone(user.getPhone().replace(user.getPhone().subSequence(0,5),"(501)"));
+
+                jpaApi.em().persist(client);
+
+                x++;
             }
 
-            jpaApi.em().persist(projectUser);
+            return ok("ok");
 
+        } catch (Exception e)
+        {
+            return ok("Unable to get users: " + e.getMessage());
         }
+    }
 
-        return ok("done");
+
+       return ok("done");
     }
 
     @Transactional
     public Result resetDb()
     {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate = LocalDate.now();
         String today = dtf.format(localDate);
 
@@ -99,7 +118,7 @@ public class DbGeneratorController extends Controller
             jpaApi.em().persist(equipment);
         }
 
-        List<Employee> employees = jpaApi.em().createQuery("FROM Employee").getResultList();
+        List<Employee> employees = jpaApi.em().createQuery("FROM Employee e").getResultList();
 
         for(Employee employee : employees)
         {

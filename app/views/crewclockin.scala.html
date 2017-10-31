@@ -1,4 +1,4 @@
-@(foreman : Employee, employees : List[Employee], equipments : List[Equipment], contracts : List[Contract])
+@(foreman : Employee, employees : List[Employee], equipments : List[Equipment], contracts : List[Contract], recentContractId : Integer)
 
 <!DOCTYPE html>
 <html>
@@ -15,16 +15,24 @@
         <tr>
             <td><select name="contract" id="contract">
                 @for(contract <- contracts) {
-                <option value="@contract.getContractId">Contract @contract.getContractId: @contract.getClient.getLastName,
-                    @contract.getClient.getLastName
-                </option>
+                    @if(contract.getContractId == recentContractId) {
+                        <option value="@contract.getContractId" selected>Contract @contract.getContractId:
+                            @contract.getClient.getLastName,
+                            @contract.getClient.getFirstName
+                        </option>
+                    } else {
+                        <option value="@contract.getContractId">Contract @contract.getContractId:
+                            @contract.getClient.getLastName,
+                            @contract.getClient.getFirstName
+                        </option>
+                    }
                 }
             </select>
             </td>
         </tr>
     </table>
 
-    <br />
+    <br/>
 
     <h3>Crew Clock-In</h3>
     <table>
@@ -33,6 +41,20 @@
             <td>@employee.getLastName, @employee.getFirstName</td>
             <td>
                 <select name="clockintime@employee.getEmployeeId" id="clockintime@employee.getEmployeeId">
+                    @if(employee.getEmployeeId == foreman.getEmployeeId) {
+                    <option selected value="07:00:00">7:00 AM</option>
+                    <option value="07:15:00">7:15 AM</option>
+                    <option value="07:30:00">7:30 AM</option>
+                    <option value="07:45:00">7:45 AM</option>
+                    <option value="08:00:00">8:00 AM</option>
+                    <option value="08:15:00">8:15 AM</option>
+                    <option value="08:30:00">8:30 AM</option>
+                    <option value="08:45:00">8:45 AM</option>
+                    <option value="09:00:00">9:00 AM</option>
+                    <option value="09:15:00">9:15 AM</option>
+                    <option value="09:30:00">9:30 AM</option>
+                    <option value="09:45:00">9:45 AM</option>
+                    } else {
                     <option selected value="notcrew"></option>
                     <option value="07:00:00">7:00 AM</option>
                     <option value="07:15:00">7:15 AM</option>
@@ -46,6 +68,7 @@
                     <option value="09:15:00">9:15 AM</option>
                     <option value="09:30:00">9:30 AM</option>
                     <option value="09:45:00">9:45 AM</option>
+                    }
                 </select>
             </td>
             <td></td>
@@ -53,7 +76,7 @@
         }
     </table>
 
-    <br />
+    <br/>
 
     <h3>Equipment Check-Out</h3>
     <table>

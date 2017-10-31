@@ -2,24 +2,26 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                               controllers.LoginController.getLogin
+GET     /                                   controllers.LoginController.getLogin
 
-GET     /login                          controllers.LoginController.getLogin
-POST    /login                          controllers.LoginController.postLogin
+GET     /login                              controllers.LoginController.getLogin
+POST    /login                              controllers.LoginController.postLogin
 
-GET     /crewClockIn/:id                controllers.ForemanController.getClockInScreen(id: Integer)
-POST    /foremanWelcome/:id             controllers.ForemanController.getWelcomeScreen(id : Integer)
-GET     /crewClockOut/:id/:contractId               controllers.ForemanController.getClockOutScreen(id: Integer, contractId: Integer)
-POST    /crewClockOut/:id               controllers.ForemanController.postCrewClockOut(id: Integer)
-GET     /uploadImages                   controllers.ForemanController.getUploadPhoto
-POST    /uploadImages                   controllers.ForemanController.postUploadPhoto
+GET     /crewClockIn/:id                    controllers.ForemanController.getClockInScreen(id: Integer)
+POST    /foremanWelcome/:id                 controllers.ForemanController.getWelcomeScreen(id : Integer)
+GET     /crewClockOut/:id/:contractId       controllers.ForemanController.getClockOutScreen(id: Integer, contractId: Integer)
+POST    /crewClockOut/:id                   controllers.ForemanController.postCrewClockOut(id: Integer)
+POST    /dailySummary/:id                   controllers.ForemanController.postSummaryScreen(id: Integer)
+GET     /uploadImages                       controllers.ForemanController.getUploadPhoto
+POST    /uploadImages                       controllers.ForemanController.postUploadPhoto
 
-GET     /contractPlan/:id               controllers.ForemanController.getPicture(id : Integer)
+GET     /projectManagerWelcome/:id          controllers.ProjectManagerController.getWelcomeScreen(id : Integer)
+GET     /newContract                        controllers.ProjectManagerController.newContract
+GET     /contractPlan/:id                   controllers.ProjectManagerController.getPlan(id : Integer)
 
-GET     /projectManagerWelcome/:id      controllers.ProjectManagerController.getWelcomeScreen(id : Integer)
 
-GET     /generateDb                     controllers.DbGeneratorController.generateDb
-GET     /resetDb                        controllers.DbGeneratorController.resetDb
+GET     /generateDb                         controllers.DbGeneratorController.generateDb
+GET     /resetDb                            controllers.DbGeneratorController.resetDb
 
-GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
 
