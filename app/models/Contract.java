@@ -24,7 +24,7 @@ public class Contract
     @OneToMany(mappedBy = "contract")
     private List<Estimate> estimates;
     @ManyToOne
-    @JoinColumn(name = "clientId")
+    @JoinColumn(name = "clientId", insertable = false, updatable = false)
     private Client client;
     @OneToMany(mappedBy = "contract")
     private List<Equipment> equipments;

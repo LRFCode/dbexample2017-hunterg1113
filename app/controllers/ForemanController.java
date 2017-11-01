@@ -174,10 +174,13 @@ public class ForemanController extends Controller
             photo = null;
         }
 
+        int nextPicId = jpaApi.em().createQuery("FROM ProjectPicture ORDER BY pictureId DESC", ProjectPicture.class).setMaxResults(1).getSingleResult().getPictureId() + 1;
+
         ProjectPicture projectPicture = new ProjectPicture();
 
+        projectPicture.setPictureId(nextPicId);
+        projectPicture.setContractId(128);
         projectPicture.setPicture(photo);
-
 
         jpaApi.em().persist(projectPicture);
 

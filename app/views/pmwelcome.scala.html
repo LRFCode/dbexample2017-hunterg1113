@@ -4,6 +4,9 @@
 <html>
 <head>
     <title>Project Manager</title>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPXxNo-fiKxRlytPCdHAWLYEt2KB2bxpI&callback=myMap"></script>
+
 </head>
 <body>
 <h2>Welcome, @projectManager.getFirstName</h2>
@@ -23,12 +26,11 @@
         <th align="left">Category</th>
         <th align="right">Estimate</th>
         <th align="right">Actual</th>
-        <th align="right">Difference</th>
     </tr>
     @for(foreman <- foremen) {
     <tr>
         <td rowspan="10" valign="top">@foreman.getActuals.get(0).getEstimate.getContract.getClient.getFullName</td>
-        <td rowspan="10" valign="top">@foreman.getLastName</td>
+        <td rowspan="10" valign="top"><a href="@routes.ProjectManagerController.getForemanOverview(foreman.getEmployeeId)">@foreman.getLastName</a></td>
         <td rowspan="10" valign="top">@foreman.getActuals.get(0).getEstimate.getContract.getClient.getFullAddress()</td>
         @for(actual <- foreman.getActuals) {
     <tr>
@@ -36,7 +38,6 @@
         <td>0@actual.getEstimate.getCategoryId @actual.getEstimate.getCategory.getCategoryName</td>
         <td align="right">@actual.getEstimate.getEstimateHours</td>
         <td align="right">@actual.getActualHours</td>
-        <td align="right">@actual.getDifferenceFromEstimate</td>
     </tr>
     }
     </tr>
@@ -46,15 +47,27 @@
                 <button type="submit">Get Plans</button>
             </td>
         </form>
-    </tr>
-    }
-    <tr>
-        <form method="get" action="@routes.ProjectManagerController.newContract">
+        <form method="get" action="@routes.ProjectManagerController.getPhotos(foreman.getActuals.get(0).getEstimate.getContractId)" target="_blank">
             <td>
-                <button type="submit">New Contract</button>
+                <button type="submit">Get Photos</button>
             </td>
         </form>
     </tr>
+    }
 </table>
+
+<div id="map" style="width:100%;height:500px"></div>
+
+<script>
+function myMap() {
+  var myCenter = new google.maps.LatLng(51.508742,-0.120850);
+  var mapCanvas = document.getElementById("map");
+  var mapOptions = {center: myCenter, zoom: 5};
+  var map = new google.maps.Map(mapCanvas, mapOptions);
+  var marker = new google.maps.Marker({position:myCenter});
+  marker.setMap(map);
+}
+</script>
+
 </body>
 </html>

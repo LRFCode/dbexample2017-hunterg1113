@@ -16,9 +16,10 @@ GET     /uploadImages                       controllers.ForemanController.getUpl
 POST    /uploadImages                       controllers.ForemanController.postUploadPhoto
 
 GET     /projectManagerWelcome/:id          controllers.ProjectManagerController.getWelcomeScreen(id : Integer)
-GET     /newContract                        controllers.ProjectManagerController.newContract
 GET     /contractPlan/:id                   controllers.ProjectManagerController.getPlan(id : Integer)
-
+GET     /foremanOverview/:id                controllers.ProjectManagerController.getForemanOverview(id: Integer)
+GET     /projectPhotos/:id                  controllers.ProjectManagerController.getPhotos(id: Integer)
+GET     /photo/:id                          controllers.ProjectManagerController.getPhoto(id : Integer)
 
 GET     /generateDb                         controllers.DbGeneratorController.generateDb
 GET     /resetDb                            controllers.DbGeneratorController.resetDb

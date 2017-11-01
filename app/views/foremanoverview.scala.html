@@ -1,0 +1,53 @@
+@(foreman : Employee, completedContracts : List[Contract], projectSummaries : List[ProjectSummary])
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Foreman Overview</title>
+
+    <script src="/assets/lib/chartjs/chart.js"></script>
+</head>
+
+<body>
+<h3>@foreman.getFirstName @foreman.getLastName</h3>
+<br/>
+<label>Projects Completed:</label>
+<ul>
+    @for(contract <- completedContracts) {
+    <li>0@contract.getContractId: @contract.getClient.getLastName</li>
+    }
+</ul>
+<br />
+<canvas id="myChart"></canvas>
+
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+type: 'bar',
+data: {
+labels: [
+@for(contract <- completedContracts) {
+@contract.getContractId,
+}
+],
+datasets: [{
+label: 'Actuals',
+data: [
+@for(projectSummary <- projectSummaries){
+@projectSummary.getTotalActualHours,
+}
+],
+backgroundColor: "rgba(153,255,51,0.4)"
+}, {
+label: 'Estimates',
+data: [@for(projectSummary <- projectSummaries){
+@projectSummary.getTotalEstimateHours,
+}
+],
+backgroundColor: "rgba(255,153,0,0.4)"
+}]
+}
+});
+</script>
+
+</body>
+</html>

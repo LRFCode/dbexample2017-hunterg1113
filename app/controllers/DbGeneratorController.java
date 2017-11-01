@@ -2,19 +2,13 @@ package controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.*;
-import play.api.libs.iteratee.Cont;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -32,6 +26,7 @@ public class DbGeneratorController extends Controller
     @Transactional
     public Result getRandomUsers()
     {
+        /*
         try
         {
             URL url = new URL("https://randomuser.me/api/?nat=us&results=100");
@@ -46,54 +41,14 @@ public class DbGeneratorController extends Controller
         {
             return ok("Unable to get users: " + e.getMessage());
         }
+        */
+        return ok("ok");
     }
 
     @Transactional
     public Result generateDb()
     {
-        try
-        {
-            URL url = new URL("https://randomuser.me/api/?nat=us&results=100");
-            url.openConnection();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            RandomUser randomUser = objectMapper.readValue(url, RandomUser.class);
-
-            List<User> users = randomUser.getResults();
-
-            int x = 1;
-
-            for (User user : users)
-            {
-                Random random = new Random();
-                Client client = new Client();
-
-                client.setFirstName(user.getName().getFirst());
-                client.setLastName(user.getName().getLast());
-                client.setAddress(user.getLocation().getStreet());
-                client.setCity("Little Rock");
-                client.setZipCode("7220" + random.nextInt(10));
-                client.setEmail(user.getEmail());
-                client.setClientId(x);
-                client.setState("AR");
-
-                client.setPhone(user.getPhone().replace(user.getPhone().subSequence(0,5),"(501)"));
-
-                jpaApi.em().persist(client);
-
-                x++;
-            }
-
-            return ok("ok");
-
-        } catch (Exception e)
-        {
-            return ok("Unable to get users: " + e.getMessage());
-        }
-    }
-
-
-       return ok("done");
+        return ok("nada hecho");
     }
 
     @Transactional
@@ -105,14 +60,14 @@ public class DbGeneratorController extends Controller
 
         List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE actualDate = :today").setParameter("today", today).getResultList();
 
-        for(Actual actual : actuals)
+        for (Actual actual : actuals)
         {
             jpaApi.em().remove(actual);
         }
 
         List<Equipment> equipmentList = jpaApi.em().createQuery("FROM Equipment e").getResultList();
 
-        for(Equipment equipment : equipmentList)
+        for (Equipment equipment : equipmentList)
         {
             equipment.setContractId(null);
             jpaApi.em().persist(equipment);
@@ -120,7 +75,7 @@ public class DbGeneratorController extends Controller
 
         List<Employee> employees = jpaApi.em().createQuery("FROM Employee e").getResultList();
 
-        for(Employee employee : employees)
+        for (Employee employee : employees)
         {
             employee.setLastClockIn(null);
             jpaApi.em().persist(employee);
