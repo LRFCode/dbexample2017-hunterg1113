@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>Foreman</title>
+    <script src="/assets/lib/chartjs/chart.js"></script>
 </head>
 <body>
 <h2>Welcome, @foreman.getFirstName</h2>
@@ -46,5 +47,38 @@
 <form method="get" action="@routes.ForemanController.getUploadPhoto">
     <button type="submit">Upload Images</button>
 </form>
+
+<canvas id="myChart"></canvas>
+
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+type: 'bar',
+data: {
+labels: [
+@for(actual <- actuals) {
+@actual.getEstimate.getCategory.getCategoryName,
+}
+],
+datasets: [{
+label: 'Estimated Hrs',
+data: [
+@for(actual <- actuals) {
+@actual.getEstimate.getEstimateHours,
+}
+],
+backgroundColor: "rgba(153,255,51,0.4)"
+}, {
+label: 'Actual Hrs',
+data: [
+@for(actual <- actuals) {
+@actual.getActualHours,
+}
+],
+backgroundColor: "rgba(255,153,0,0.4)"
+}]
+}
+});
+</script>
 </body>
 </html>
