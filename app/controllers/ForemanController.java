@@ -379,4 +379,21 @@ public class ForemanController extends Controller
             }
         }
     }
+
+    @Transactional
+    public Result getForemanTest(int id)
+    {
+        Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
+
+        Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setMaxResults(1).setParameter("id", id).getSingleResult();
+
+        Client client = actual.getEstimate().getContract().getClient();
+
+        String actualDate = actual.getActualDate();
+
+        List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id AND actualDate = :actualDate").setParameter("id", id).setParameter("actualDate", actualDate).getResultList();
+
+        return ok(views.html.foremantest.render(foreman,client,actuals));
+    }
+
 }

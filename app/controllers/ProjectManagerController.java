@@ -156,4 +156,9 @@ public class ProjectManagerController extends Controller
 
         return ok(views.html.foremanoverview.render(foreman, completedContracts, projectSummaries));
     }
+
+    public Result getTemplate()
+    {
+        return ok(views.html.templatetest.render());
+    }
 }

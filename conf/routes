@@ -14,6 +14,7 @@ POST    /crewClockOut/:id                   controllers.ForemanController.postCr
 POST    /dailySummary/:id                   controllers.ForemanController.postSummaryScreen(id: Integer)
 GET     /uploadImages                       controllers.ForemanController.getUploadPhoto
 POST    /uploadImages                       controllers.ForemanController.postUploadPhoto
+GET     /foremanTest/:id                    controllers.ForemanController.getForemanTest(id: Integer)
 
 GET     /projectManagerWelcome/:id          controllers.ProjectManagerController.getWelcomeScreen(id : Integer)
 GET     /contractPlan/:id                   controllers.ProjectManagerController.getPlan(id : Integer)
@@ -23,5 +24,7 @@ GET     /photo/:id                          controllers.ProjectManagerController
 
 GET     /generateDb                         controllers.DbGeneratorController.generateDb
 GET     /resetDb                            controllers.DbGeneratorController.resetDb
+
+GET     /templateTest                       controllers.ProjectManagerController.getTemplate
 
 GET     /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
