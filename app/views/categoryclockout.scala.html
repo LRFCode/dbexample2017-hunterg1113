@@ -3,28 +3,121 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Update Category Hours</title>
+    <title>Category Hours</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+     /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 610px}
+
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* Set black background color, white text and some padding */
+    footer {
+      position: relative;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+  </style>
 </head>
 
 <body>
-<h3>Job Category Hours</h3>
-<label>Hours to assign: </label>@hours
-<br />
-<form method="post" action="@routes.ForemanController.postSummaryScreen(foreman.getEmployeeId)">
-    <table>
-        <tr>
-            <th align="left">Category</th>
-            <th align="right">Add Hours</th>
-        </tr>
-        @for(actual <- actuals) {
-        <tr>
-            <td>@actual.getEstimate.getCategory.getCategoryName</td>
-            <td><input type="text" name="category@actual.getEstimate.getCategoryId" id="category@actual.getEstimate.getCategoryId"></td>
-        </tr>
-        }
-    </table>
-    <button type="submit">Save</button>
-</form>
-</script>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid text center">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Foreman</a>
+        </div>
+        <div class="collapse navbar-collapse navbar-center" id="myNavbar">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"></span></a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid text-center">
+
+    <div class="row content">
+
+        <div class="col-sm-1 sidenav"></div>
+
+        <div class="col-sm-10 text-left">
+            <form method="post" action="@routes.ForemanController.postSummaryScreen(foreman.getEmployeeId)">
+            <div class="form-group">
+                <br/>
+
+                    <h3>Hours per Category</h3>
+
+                    <hr/>
+
+                    <h4>Hours to assign: @hours</h4>
+
+                    <br/>
+
+                    <br/>
+
+                        <div class="row">
+                        @for(actual <- actuals) {
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>@actual.getEstimate.getCategory.getCategoryName</label>
+                                    <input type="text" class="form-control" placeholder="Enter hours" name="category@actual.getEstimate.getCategoryId" id="category@actual.getEstimate.getCategoryId">
+                                </div>
+                            </div>
+                        }
+                        </div>
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <button type="submit" class="btn btn-primary btn-block btn-lg">Submit</button>
+                        </div>
+                    </div>
+            </form>
+            <br/>
+        </div>
+
+    </div>
+
+    <div class="col-sm-1 sidenav"></div>
+
+</div>
+
+</div>
+
 </body>
+
 </html>
+

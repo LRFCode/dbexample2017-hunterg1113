@@ -16,9 +16,12 @@ import play.mvc.Result;
 import javax.inject.Inject;
 import java.io.File;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ForemanController extends Controller
@@ -69,6 +72,43 @@ public class ForemanController extends Controller
         List<Equipment> crewEquipment = createCrewEquipmentAndUpdateInDb(dynamicForm, id);
 
         return ok(views.html.foremanwelcome.render(foreman, client, actuals, crew, crewEquipment));
+    }
+
+    @Transactional
+    public Result getForemanWelcome(int id)
+    {
+        Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
+
+        Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setMaxResults(1).setParameter("id", id).getSingleResult();
+
+        Contract contract = actual.getEstimate().getContract();
+
+        int contractId = contract.getContractId();
+
+        Client client = contract.getClient();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.now();
+        String today = dtf.format(localDate);
+
+        List<AvgEstHoursPerCat> hours = jpaApi.em().createNativeQuery("SELECT e.categoryId AS categoryId, " +
+                "c.categoryName AS categoryName, " +
+                "AVG(e.estimateHours) AS estimateHours, " +
+                "SUM(a.actualHours) AS actualHours " +
+                "FROM Actual a " +
+                "JOIN Estimate e " +
+                "ON a.estimateId = e.estimateId " +
+                "JOIN Category c " +
+                "ON c.categoryId = e.categoryId " +
+                "WHERE e.contractId = :id AND a.actualDate <> :today " +
+                "GROUP BY e.categoryId", AvgEstHoursPerCat.class).setParameter("id", contractId).setParameter("today", today).getResultList();
+
+        DynamicForm dynamicForm = formFactory.form().bindFromRequest();
+        List<Employee> crew = createCrewAndUpdateInDb(dynamicForm, id);
+        List<Equipment> crewEquipment = createCrewEquipmentAndUpdateInDb(dynamicForm, id);
+
+
+        return ok(views.html.foremanwelcometest.render(foreman, client, hours, crew, crewEquipment, contract));
     }
 
     @Transactional
@@ -128,7 +168,7 @@ public class ForemanController extends Controller
 
         List<Actual> dailyActuals = new ArrayList<>();
 
-        for(Actual actual : actuals)
+        for (Actual actual : actuals)
         {
             String search = "category" + actual.getEstimate().getCategoryId();
 
@@ -158,7 +198,7 @@ public class ForemanController extends Controller
     }
 
     @Transactional
-    public Result postUploadPhoto()
+    public Result postUploadPhoto(int id)
     {
         Http.MultipartFormData<File> formData = request().body().asMultipartFormData();
         Http.MultipartFormData.FilePart<File> filePart = formData.getFile("filename");
@@ -178,13 +218,23 @@ public class ForemanController extends Controller
 
         ProjectPicture projectPicture = new ProjectPicture();
 
+        DynamicForm dynamicForm = formFactory.form().bindFromRequest();
+
         projectPicture.setPictureId(nextPicId);
-        projectPicture.setContractId(128);
+        projectPicture.setContractId(id);
         projectPicture.setPicture(photo);
+        projectPicture.setPictureDate(dynamicForm.get("date"));
+
+        if (dynamicForm.get("photoname") != null)
+        {
+            projectPicture.setPictureName(dynamicForm.get("photoname"));
+        }
 
         jpaApi.em().persist(projectPicture);
 
-        return ok("Saved photo");
+        System.out.println(dynamicForm.get("date"));
+
+        return ok("photo saved");
     }
 
     @Transactional
@@ -381,19 +431,55 @@ public class ForemanController extends Controller
     }
 
     @Transactional
-    public Result getForemanTest(int id)
+    public Result getCrewClockInTest(int id)
+    {
+        Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
+
+        List<Employee> employees = jpaApi.em().createQuery("FROM Employee e WHERE NOT title IN ('project manager')  ORDER BY lastName", Employee.class).getResultList();
+
+        List<Equipment> equipments = jpaApi.em().createQuery("FROM Equipment e").getResultList();
+
+        List<Contract> contracts = jpaApi.em().createQuery("FROM Contract c WHERE completed = 0").getResultList();
+
+        int contractId = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :employeeId ORDER BY actualDate DESC", Actual.class).setParameter("employeeId", id).setMaxResults(1).getSingleResult().getEstimate().getContractId();
+
+        return ok(views.html.crewclockintest.render(foreman, employees, equipments, contracts, contractId));
+    }
+
+    @Transactional
+    public Result getForemanWelcomeTest(int id)
     {
         Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
 
         Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setMaxResults(1).setParameter("id", id).getSingleResult();
 
-        Client client = actual.getEstimate().getContract().getClient();
+        Contract contract = actual.getEstimate().getContract();
 
-        String actualDate = actual.getActualDate();
+        int contractId = contract.getContractId();
 
-        List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id AND actualDate = :actualDate").setParameter("id", id).setParameter("actualDate", actualDate).getResultList();
+        Client client = contract.getClient();
 
-        return ok(views.html.foremantest.render(foreman,client,actuals));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.now();
+        String today = dtf.format(localDate);
+
+        List<AvgEstHoursPerCat> hours = jpaApi.em().createNativeQuery("SELECT e.categoryId AS categoryId, " +
+                "c.categoryName AS categoryName, " +
+                "AVG(e.estimateHours) AS estimateHours, " +
+                "SUM(a.actualHours) AS actualHours " +
+                "FROM Actual a " +
+                "JOIN Estimate e " +
+                "ON a.estimateId = e.estimateId " +
+                "JOIN Category c " +
+                "ON c.categoryId = e.categoryId " +
+                "WHERE e.contractId = :id AND a.actualDate <> :today " +
+                "GROUP BY e.categoryId", AvgEstHoursPerCat.class).setParameter("id", contractId).setParameter("today", today).getResultList();
+
+        DynamicForm dynamicForm = formFactory.form().bindFromRequest();
+        List<Employee> crew = createCrewAndUpdateInDb(dynamicForm, id);
+        List<Equipment> crewEquipment = createCrewEquipmentAndUpdateInDb(dynamicForm, id);
+
+
+        return ok(views.html.foremanwelcometest.render(foreman, client, hours, crew, crewEquipment, contract));
     }
-
 }

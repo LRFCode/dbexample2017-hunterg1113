@@ -10,6 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class ProjectManagerController extends Controller
 
         byte[] plan = actual.getEstimate().getContract().getPlans();
 
-        return ok(plan);
+        return ok(plan).as("image.jpg");
     }
 
     @Transactional
@@ -101,7 +102,7 @@ public class ProjectManagerController extends Controller
 
         List<ProjectPicWId> projectPicWIds = new ArrayList<>();
 
-        for(int i = 0; i < projectPictures.size(); i++)
+        for (int i = 0; i < projectPictures.size(); i++)
         {
             ProjectPicWId projectPicWId = new ProjectPicWId();
 
@@ -153,12 +154,114 @@ public class ProjectManagerController extends Controller
             completedContracts.add(contract);
         }
 
-
         return ok(views.html.foremanoverview.render(foreman, completedContracts, projectSummaries));
     }
 
-    public Result getTemplate()
+    @Transactional
+    public Result getTemplate(int id)
     {
-        return ok(views.html.templatetest.render());
+        Employee projectManager = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
+
+        List<Employee> foremen = jpaApi.em().createQuery("FROM Employee e WHERE title = 'foreman'").getResultList();
+
+        List<JobCoords> mapCoordinates = new ArrayList<>();
+
+        List<ForemanSummary> foremanSummaries = new ArrayList<>();
+
+        for (int i = 0; i < foremen.size(); i++)
+        {
+            ForemanSummary foremanSummary = new ForemanSummary();
+
+            Employee employee = foremen.get(i);
+            foremanSummary.setListNo(i);
+
+            int employeeId = employee.getEmployeeId();
+            foremanSummary.setEmployeeId(employeeId);
+
+            Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setParameter("id", employeeId).setMaxResults(1).getSingleResult();
+            String recentDate = actual.getActualDate();
+            List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id AND actualDate = :recentDate", Actual.class).setParameter("id", employeeId).setParameter("recentDate", recentDate).getResultList();
+
+            foremanSummary.setActuals(actuals);
+
+            String clientAddress = actual.getEstimate().getContract().getClient().getFullAddress();
+
+            try
+            {
+                String searchAddress = URLEncoder.encode(clientAddress, "UTF-8");
+
+                URL url = new URL("https://maps.google.com/maps/api/geocode/json?key=AIzaSyAPXxNo-fiKxRlytPCdHAWLYEt2KB2bxpI&address=" + searchAddress);
+                url.openConnection();
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                Geocoder geocoder = objectMapper.readValue(url, Geocoder.class);
+
+                String lat = geocoder.getResults().get(0).getGeometry().getLocation().getLat().toString();
+                String lng = geocoder.getResults().get(0).getGeometry().getLocation().getLng().toString();
+
+                JobCoords jobCoords = new JobCoords();
+
+                jobCoords.setClientLastName(actuals.get(0).getEstimate().getContract().getClient().getFullName());
+                jobCoords.setForemanLastName(employee.getFirstName() + " " + employee.getLastName());
+                jobCoords.setLat(lat);
+                jobCoords.setLng(lng);
+
+                mapCoordinates.add(jobCoords);
+
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+                return ok("Error retrieving map");
+            }
+
+            foremanSummary.setLastName(employee.getLastName());
+
+            foremanSummaries.add(foremanSummary);
+        }
+        return ok(views.html.templatetest.render(projectManager, foremanSummaries, mapCoordinates));
+    }
+
+    @Transactional
+    public Result getContracts()
+    {
+        List<Contract> contracts = jpaApi.em().createQuery("FROM Contract c WHERE completed = 1ORDER BY contractId").getResultList();
+
+        contracts.get(0).getEstimates();
+
+        return ok(views.html.contracts.render(contracts));
+    }
+
+    @Transactional
+    public Result getContract(int id)
+    {
+        Contract contract = jpaApi.em().createQuery("FROM Contract c WHERE contractId = :id", Contract.class).setParameter("id", id).getSingleResult();
+
+        List<Estimate> estimates = contract.getEstimates();
+
+        List<AvgEstHoursPerCat> hours = new ArrayList<>();
+
+        for (Estimate estimate : estimates)
+        {
+            AvgEstHoursPerCat hour = new AvgEstHoursPerCat();
+
+            int estimateId = estimate.getEstimateId();
+
+            Actual recentActual = jpaApi.em().createQuery("FROM Actual a WHERE estimateId = :estimateId ORDER BY actualDate DESC", Actual.class).setParameter("estimateId",estimateId).setMaxResults(1).getSingleResult();
+
+            hour.setActualHours(recentActual.getActualHours());
+            hour.setCategoryId(estimate.getCategoryId());
+            hour.setCategoryName(estimate.getCategory().getCategoryName());
+            hour.setEstimateHours(estimate.getEstimateHours());
+
+            hours.add(hour);
+        }
+
+        Employee foreman = contract.getEstimates().get(0).getActuals().get(0).getEmployee();
+
+        int foremanId = foreman.getEmployeeId();
+
+        Client client = contract.getClient();
+
+        return ok(views.html.foremantest.render(foreman, client, hours));
     }
 }

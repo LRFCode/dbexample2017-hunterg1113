@@ -1,0 +1,228 @@
+@(foreman : Employee, client : Client, hours : List[AvgEstHoursPerCat], crew : List[Employee], equipments : List[Equipment], contract : Contract)
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Foreman</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/assets/lib/chartjs/chart.js"></script>
+
+    <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 550px}
+
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* Set black background color, white text and some padding */
+    footer {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+
+    .modal-xlg {
+    width: 900px;
+  }
+
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Foreman</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+
+
+                <li class="active"><a href="#">Home</a></li>
+
+                <li><a href="#myModal" data-toggle="modal">Upload Photos</a></li>
+
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Upload photo</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" enctype="multipart/form-data" action="@routes.ForemanController.postUploadPhoto(contract.getContractId)" target="_blank">
+
+                                    <div class="form-group">
+                                        <input type="file" class="form-control-file" name="filename" id="filename" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Date</label>
+                                        <input type="date" class="form-control" name="date" id="date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <input type="text" class="form-control" name="photoname" id="photoname" required>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <li><a href="#myModal1" data-toggle="modal">Plans</a></li>
+
+                <div class="modal fade" id="myModal1" role="dialog">
+                    <div class="modal-dialog modal-lg">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Plans</h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="img-responsive" src="@routes.ForemanController.getPicture(contract.getContractId)">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+
+                <li><a href="@routes.ForemanController.getClockOutScreen(foreman.getEmployeeId, contract.getContractId)"><span class="glyphicon glyphicon-log-out"></span>Clock-Out</a></li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid text-center">
+    <div class="row content">
+        <div class="col-sm-6 text-center">
+            <h3>Client: @client.getFullName</h3>
+            <h4>Address: @client.getFullAddress</h4>
+
+            <hr/>
+
+            <div class="row">
+            <div class="col-sm-6">
+            <label>Crew:</label>
+                @for(employee <- crew) {
+                <br/>@employee.getFirstName @employee.getLastName
+                }
+
+            </div>
+            <div class="col-sm-6">
+            <label>Equipment:</label>
+                @for(equipment <- equipments) {
+                <br/>@equipment.getEquipmentName
+                }
+            </div>
+            </div>
+            <br/>
+            <hr/>
+            <br/>
+
+
+            <table class="table-striped" align="center">
+                <tr>
+                    <th align="left">Category</th>
+                    <td align="right" width="125"><b>Estimate Hours</b></td>
+                    <td align="right" width="125"><b>Actual Hours</b></td>
+                </tr>
+                @for(hour <- hours) {
+                <tr>
+                    <td align="left">@hour.getCategoryName</td>
+                    <td align="right" width="125">@hour.getEstimateHoursRounded</td>
+                    <td align="right" width="125">@hour.getActualHours</td>
+                </tr>
+                }
+            </table>
+            <br />
+        </div>
+        <div class="col-sm-6 sidenav">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer class="container-fluid text-center">
+    <p>Foreman</p>
+</footer>
+
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+
+var myChart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+        labels: [
+            @for(hour <- hours) {
+            "@hour.getCategoryName",
+            }
+        ],
+        datasets: [{
+            label: 'Estimated Hrs',
+            data: [
+            @for(hour <- hours) {
+            @hour.getEstimateHoursRounded,
+            }
+        ],
+        backgroundColor: "rgba(153,255,51,0.4)"
+        }, {
+            label: 'Actual Hrs',
+            data: [
+            @for(hour <- hours) {
+            @hour.getActualHours,
+            }
+        ],
+        backgroundColor: "rgba(255,153,0,0.4)"
+        }]
+    }
+});
+</script>
+
+
+</body>
+</html>

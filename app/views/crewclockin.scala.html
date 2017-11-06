@@ -1,99 +1,159 @@
 @(foreman : Employee, employees : List[Employee], equipments : List[Equipment], contracts : List[Contract], recentContractId : Integer)
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Clock-In</title>
+    <title>Crew Clock-In</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 675px}
+
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* Set black background color, white text and some padding */
+    footer {
+      position: relative;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+  </style>
 </head>
-
 <body>
-<h2>Welcome, @foreman.getFirstName</h2>
-<form method="post" action="@routes.ForemanController.getWelcomeScreen(foreman.getEmployeeId)">
 
-    <h3>Project</h3>
-    <table>
-        <tr>
-            <td><select name="contract" id="contract">
-                @for(contract <- contracts) {
-                    @if(contract.getContractId == recentContractId) {
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Foreman</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"></a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid text-center">
+    <div class="row content">
+        <div class="col-sm-1 sidenav"></div>
+
+        <div class="col-sm-10 text-left">
+            <h1>Welcome, @foreman.getFirstName</h1>
+            <form method="post" action="@routes.ForemanController.getForemanWelcomeTest(foreman.getEmployeeId)">
+                <div class="form-group">
+                    <h3>Project</h3>
+                    <select class="form-control" name="contract" id="contract">
+                        @for(contract <- contracts) {
+                        @if(contract.getContractId == recentContractId) {
                         <option value="@contract.getContractId" selected>Contract @contract.getContractId:
                             @contract.getClient.getLastName,
                             @contract.getClient.getFirstName
                         </option>
-                    } else {
+                        } else {
                         <option value="@contract.getContractId">Contract @contract.getContractId:
                             @contract.getClient.getLastName,
                             @contract.getClient.getFirstName
                         </option>
+                        }
+                        }
+                    </select>
+                </div>
+
+                <hr/>
+
+                <h3>Crew Clock-In</h3>
+
+                <div class="row">
+                    @for(employee <- employees) {
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>@employee.getLastName, @employee.getFirstName</label>
+                            <select class="form-control form-control-sm" name="clockintime@employee.getEmployeeId" id="clockintime@employee.getEmployeeId">
+                                @if(employee.getEmployeeId == foreman.getEmployeeId) {
+                                <option selected value="07:00:00">7:00 AM</option>
+                                <option value="07:15:00">7:15 AM</option>
+                                <option value="07:30:00">7:30 AM</option>
+                                <option value="07:45:00">7:45 AM</option>
+                                <option value="08:00:00">8:00 AM</option>
+                                <option value="08:15:00">8:15 AM</option>
+                                <option value="08:30:00">8:30 AM</option>
+                                <option value="08:45:00">8:45 AM</option>
+                                <option value="09:00:00">9:00 AM</option>
+                                <option value="09:15:00">9:15 AM</option>
+                                <option value="09:30:00">9:30 AM</option>
+                                <option value="09:45:00">9:45 AM</option>
+                                } else {
+                                <option selected value="notcrew"></option>
+                                <option value="07:00:00">7:00 AM</option>
+                                <option value="07:15:00">7:15 AM</option>
+                                <option value="07:30:00">7:30 AM</option>
+                                <option value="07:45:00">7:45 AM</option>
+                                <option value="08:00:00">8:00 AM</option>
+                                <option value="08:15:00">8:15 AM</option>
+                                <option value="08:30:00">8:30 AM</option>
+                                <option value="08:45:00">8:45 AM</option>
+                                <option value="09:00:00">9:00 AM</option>
+                                <option value="09:15:00">9:15 AM</option>
+                                <option value="09:30:00">9:30 AM</option>
+                                <option value="09:45:00">9:45 AM</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
                     }
-                }
-            </select>
-            </td>
-        </tr>
-    </table>
+                </div>
+                <hr/>
 
-    <br/>
+                <h3>Equipment Check-Out</h3>
 
-    <h3>Crew Clock-In</h3>
-    <table>
-        @for(employee <- employees) {
-        <tr>
-            <td>@employee.getLastName, @employee.getFirstName</td>
-            <td>
-                <select name="clockintime@employee.getEmployeeId" id="clockintime@employee.getEmployeeId">
-                    @if(employee.getEmployeeId == foreman.getEmployeeId) {
-                    <option selected value="07:00:00">7:00 AM</option>
-                    <option value="07:15:00">7:15 AM</option>
-                    <option value="07:30:00">7:30 AM</option>
-                    <option value="07:45:00">7:45 AM</option>
-                    <option value="08:00:00">8:00 AM</option>
-                    <option value="08:15:00">8:15 AM</option>
-                    <option value="08:30:00">8:30 AM</option>
-                    <option value="08:45:00">8:45 AM</option>
-                    <option value="09:00:00">9:00 AM</option>
-                    <option value="09:15:00">9:15 AM</option>
-                    <option value="09:30:00">9:30 AM</option>
-                    <option value="09:45:00">9:45 AM</option>
-                    } else {
-                    <option selected value="notcrew"></option>
-                    <option value="07:00:00">7:00 AM</option>
-                    <option value="07:15:00">7:15 AM</option>
-                    <option value="07:30:00">7:30 AM</option>
-                    <option value="07:45:00">7:45 AM</option>
-                    <option value="08:00:00">8:00 AM</option>
-                    <option value="08:15:00">8:15 AM</option>
-                    <option value="08:30:00">8:30 AM</option>
-                    <option value="08:45:00">8:45 AM</option>
-                    <option value="09:00:00">9:00 AM</option>
-                    <option value="09:15:00">9:15 AM</option>
-                    <option value="09:30:00">9:30 AM</option>
-                    <option value="09:45:00">9:45 AM</option>
+                <div class="row">
+                    @for(equipment <- equipments) {
+                    <div class="col-sm-3 text-left">
+                        <div class="form-group">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" name="equipment@equipment.getEquipmentId"
+                                       id="equipment@equipment.getEquipmentId">@equipment.getEquipmentName
+                            </label>
+                        </div>
+                    </div>
                     }
-                </select>
-            </td>
-            <td></td>
-        </tr>
-        }
-    </table>
+                </div>
 
-    <br/>
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Submit</button>
 
-    <h3>Equipment Check-Out</h3>
-    <table>
-        <tr>
-            <th align="left">Name</th>
-            <th>In use</th>
-        </tr>
-        @for(equipment <- equipments) {
-        <tr>
-            <td>@equipment.getEquipmentName</td>
-            <td align="right"><input type="checkbox" name="equipment@equipment.getEquipmentId"
-                                     id="equipment@equipment.getEquipmentId"></td>
-        </tr>
-        }
-    </table>
-    <br/>
-    <button type="submit">Save</button>
-</form>
+            </form>
+            <br/>
+        </div>
+        <div class="col-sm-1 sidenav"></div>
+    </div>
+</div>
+
 </body>
 </html>

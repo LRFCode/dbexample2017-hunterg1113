@@ -1,7 +1,5 @@
 package controllers;
 
-import models.Employee;
-import models.Equipment;
 import models.Password;
 import models.ProjectUser;
 import play.data.DynamicForm;
@@ -25,6 +23,11 @@ public class LoginController extends Controller
     {
         this.formFactory = formFactory;
         this.jpaApi = jpaApi;
+    }
+
+    public Result redirectToLogin()
+    {
+        return redirect(routes.LoginController.getLogin());
     }
 
     public Result getLogin()
@@ -59,5 +62,10 @@ public class LoginController extends Controller
 
         return ok("Error: username & password combination not found in database. Please try again.");
 
+    }
+
+    public Result getLogOut()
+    {
+        return ok(views.html.login.render());
     }
 }

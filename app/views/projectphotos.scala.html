@@ -2,6 +2,12 @@
 <!DOCTYPE html>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Photos</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <style>
 body {
   font-family: Verdana, sans-serif;
@@ -142,51 +148,131 @@ img.hover-shadow {
 .hover-shadow:hover {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
 }
+
+#myInput {
+      background-image: url('/css/searchicon.png');
+      background-position: 10px 10px;
+      background-repeat: no-repeat;
+      width: 100%;
+      font-size: 16px;
+      padding: 12px 20px 12px 40px;
+      border: 1px solid #ddd;
+      margin-bottom: 12px;
+}
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 550px}
+
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* Set black background color, white text and some padding */
+    footer {
+      position: relative;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+
+    table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+    }
+
+    th, td {
+        border: none;
+        text-align: left;
+        padding: 16px;
+    }
 </style>
 
 <body>
 
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="@routes.ProjectManagerController.getTemplate(13)">PMDash</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li><a href="@routes.ProjectManagerController.getTemplate(13)">Home</a></li>
+                <li><a href="@routes.ProjectManagerController.getContracts">Contracts</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <h2 style="text-align:center">Photos</h2>
 
-<div class="row">
+<div class="container-fluid text-center">
+    <div class="row content">
 
-    @for(photo <- photos) {
-    <div class="column">
-        <img src="@routes.ProjectManagerController.getPhoto(photo.getPictureId)" style="width:100%" onclick="openModal();currentSlide(@photo.getListNo)" class="hover-shadow cursor">
+        <div class="col-sm-1"></div>
+
+        <div class="col-sm-10 text-left">
+            <div class="row">
+                @for(photo <- photos) {
+                <div class="col-sm-4 container">
+                    <br/>
+                    <img src="@routes.ProjectManagerController.getPhoto(photo.getPictureId)" style="width:100%" onclick="openModal();currentSlide(@photo.getListNo)" class="hover-shadow cursor">
+                </div>
+                }
+            </div>
+        </div>
+
+        <div id="myModal" class="modal">
+            <span class="close cursor" onclick="closeModal()">&times;</span>
+            <div class="modal-content">
+                @for(photo <- photos) {
+                <div class="mySlides">
+                    <div class="numbertext">@photo.getListNo / @photos.length</div>
+                    <img src="@routes.ProjectManagerController.getPhoto(photo.getPictureId)" style="width:100%">
+                </div>
+                }
+
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+                <div class="caption-container">
+                    <p id="caption"></p>
+                </div>
+
+                @for(photo <- photos) {
+                <div class="column">
+                    <img class="demo cursor" src="@routes.ProjectManagerController.getPhoto(photo.getPictureId)" style="width:100%" onclick="currentSlide(@photo.getListNo)">
+                </div>
+                }
+            </div>
+        </div>
+
     </div>
-
-    }
-
 </div>
-
-<div id="myModal" class="modal">
-    <span class="close cursor" onclick="closeModal()">&times;</span>
-    <div class="modal-content">
-
-        @for(photo <- photos) {
-        <div class="mySlides">
-            <div class="numbertext">@photo.getListNo / @photos.length</div>
-            <img src="@routes.ProjectManagerController.getPhoto(photo.getPictureId)" style="width:100%">
-        </div>
-
-        }
-
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
-
-        <div class="caption-container">
-            <p id="caption"></p>
-        </div>
-
-
-        @for(photo <- photos) {
-        <div class="column">
-            <img class="demo cursor" src="@routes.ProjectManagerController.getPhoto(photo.getPictureId)" style="width:100%" onclick="currentSlide(@photo.getListNo)">
-        </div>
-
-        }
-    </div>
-</div>
+<br/>
+<footer class="container-fluid text-center">
+    <p>PM Dashboard</p>
+</footer>
 
 <script>
 function openModal() {
@@ -198,6 +284,7 @@ function closeModal() {
 }
 
 var slideIndex = 1;
+
 showSlides(slideIndex);
 
 function plusSlides(n) {
