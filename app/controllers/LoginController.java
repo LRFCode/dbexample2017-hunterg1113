@@ -56,7 +56,7 @@ public class LoginController extends Controller
             }
             else if (Arrays.equals(hashedPassword, projectUsers.get(0).getPassword()) && projectUsers.get(0).getEmployee().getTitle().equals("Project Manager"))
             {
-                return redirect(routes.ProjectManagerController.getWelcomeScreen(projectUsers.get(0).getEmployeeId()));
+                return redirect(routes.ProjectManagerController.getTemplate(projectUsers.get(0).getEmployeeId()));
             }
         }
 

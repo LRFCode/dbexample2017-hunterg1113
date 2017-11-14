@@ -69,8 +69,8 @@
 
         <div class="col-sm-10 text-left">
             <form method="post" action="@routes.ForemanController.postSummaryScreen(foreman.getEmployeeId)">
-            <div class="form-group">
-                <br/>
+                <div class="form-group">
+                    <br/>
 
                     <h3>Hours per Category</h3>
 
@@ -82,16 +82,16 @@
 
                     <br/>
 
-                        <div class="row">
+                    <div class="row">
                         @for(actual <- actuals) {
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label>@actual.getEstimate.getCategory.getCategoryName</label>
-                                    <input type="text" class="form-control" placeholder="Enter hours" name="category@actual.getEstimate.getCategoryId" id="category@actual.getEstimate.getCategoryId">
-                                </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>@actual.getEstimate.getCategory.getCategoryName</label>
+                                <input type="text" class="form-control" placeholder="Enter hours" name="category@actual.getEstimate.getCategoryId" id="category@actual.getEstimate.getCategoryId">
                             </div>
-                        }
                         </div>
+                        }
+                    </div>
 
                     <div class="container-fluid">
                         <div class="row">
@@ -102,7 +102,7 @@
                             <br/>
                             <br/>
                             <br/>
-                            <button type="submit" class="btn btn-primary btn-block btn-lg">Submit</button>
+                            <button class="btn btn-primary btn-block btn-lg">Logout</button>
                         </div>
                     </div>
             </form>
@@ -116,6 +116,21 @@
 </div>
 
 </div>
+
+<script>
+
+    var numbers = [];
+
+    @for(actual <- actuals) {
+    var category@actual.getEstimate.getCategoryId = document.getElementById("category@actual.getEstimate.getCategoryId");
+    numbers.push(category@actual.getEstimate.getCategoryId);
+    }
+
+    function myFunction() {
+        alert(numbers.reduce());
+    }
+
+</script>
 
 </body>
 

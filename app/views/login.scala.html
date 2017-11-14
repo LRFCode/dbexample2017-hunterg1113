@@ -1,79 +1,117 @@
 <!DOCTYPE html>
 <html>
-<style>
-form {
-    border: 3px solid #f1f1f1;
-}
-
-input[type=text], input[type=password] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-}
-
-button:hover {
-    opacity: 0.8;
-}
-
-.cancelbtn {
-    width: auto;
-    padding: 10px 18px;
-    background-color: #f44336;
-}
-
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
-}
-
-img.avatar {
-    width: 40%;
-    border-radius: 50%;
-}
-
-.container {
-    padding: 16px;
-}
-
-span.psw {
-    float: right;
-    padding-top: 16px;
-}
-</style>
 <head>
     <title>Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+     /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 545px}
+
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* Set black background color, white text and some padding */
+    footer {
+      position: relative;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+  </style>
 </head>
+
 <body>
 
-<form method="post">
-    <div class="imgcontainer"></div>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid text center">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"></a>
+        </div>
+        <div class="collapse navbar-collapse navbar-center" id="myNavbar">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"></span></a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <div class="container">
-        <label><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="username" required>
+<div class="container-fluid text-center">
 
-        <label><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" required>
+    <div class="row content">
 
-        <button type="submit">Login</button>
-        <input type="checkbox" checked="checked"> Remember me
+        <div class="col-sm-2 sidenav"></div>
+
+        <div class="col-sm-8 text-left">
+            <br/>
+            <h1>PM Dash</h1>
+            <hr/>
+
+            <br/>
+
+            <br/>
+
+            <form method="post">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" placeholder="Enter Username" name="username" required>
+                </div>
+                <br/>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" placeholder="Enter Password" name="password" required>
+                </div>
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+
+
+                <br/>
+
+                <button class="btn btn-primary btn-block btn-lg">Login</button>
+
+            </form>
+            <br/>
+        </div>
+
+        <div class="col-sm-2 sidenav"></div>
+
     </div>
 
-    <div class="container"></div>
-</form>
+</div>
+
+<footer class="container-fluid text-center">
+    <p>PM DashBoard</p>
+</footer>
 
 </body>
+
 </html>

@@ -55,27 +55,42 @@ public class ForemanController extends Controller
     }
 
     @Transactional
-    public Result getWelcomeScreen(int id)
+    public Result getForemanWelcome(int id)
     {
         Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
 
         Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setMaxResults(1).setParameter("id", id).getSingleResult();
 
-        Client client = actual.getEstimate().getContract().getClient();
+        Contract contract = actual.getEstimate().getContract();
 
-        String actualDate = actual.getActualDate();
+        int contractId = contract.getContractId();
 
-        List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id AND actualDate = :actualDate").setParameter("id", id).setParameter("actualDate", actualDate).getResultList();
+        Client client = contract.getClient();
 
-        DynamicForm dynamicForm = formFactory.form().bindFromRequest();
-        List<Employee> crew = createCrewAndUpdateInDb(dynamicForm, id);
-        List<Equipment> crewEquipment = createCrewEquipmentAndUpdateInDb(dynamicForm, id);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.now();
+        String today = dtf.format(localDate);
 
-        return ok(views.html.foremanwelcome.render(foreman, client, actuals, crew, crewEquipment));
+        List<AvgEstHoursPerCat> hours = jpaApi.em().createNativeQuery("SELECT e.categoryId AS categoryId, " +
+                "c.categoryName AS categoryName, " +
+                "AVG(e.estimateHours) AS estimateHours, " +
+                "SUM(a.actualHours) AS actualHours " +
+                "FROM Actual a " +
+                "JOIN Estimate e " +
+                "ON a.estimateId = e.estimateId " +
+                "JOIN Category c " +
+                "ON c.categoryId = e.categoryId " +
+                "WHERE e.contractId = :id AND a.actualDate <> :today " +
+                "GROUP BY e.categoryId", AvgEstHoursPerCat.class).setParameter("id", contractId).setParameter("today", today).getResultList();
+
+        List<Employee> crew = getCrewFromDb(contractId);
+        List<Equipment> crewEquipment = getCrewEquipmentFromDb(contractId);
+
+        return ok(views.html.foremanwelcometest.render(foreman, client, hours, crew, crewEquipment, contract));
     }
 
     @Transactional
-    public Result getForemanWelcome(int id)
+    public Result postForemanWelcome(int id)
     {
         Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
 
@@ -188,7 +203,7 @@ public class ForemanController extends Controller
 
         List<Estimate> estimates = jpaApi.em().createQuery("FROM Estimate e WHERE contractId = :contractId").setParameter("contractId", contractId).getResultList();
 
-        return ok(views.html.foremandailysummary.render(foreman, dailyActuals));
+        return ok(views.html.login.render() );
     }
 
     @Transactional
@@ -198,7 +213,7 @@ public class ForemanController extends Controller
     }
 
     @Transactional
-    public Result postUploadPhoto(int id)
+    public Result postUploadPhoto(int contractId, int foremanId)
     {
         Http.MultipartFormData<File> formData = request().body().asMultipartFormData();
         Http.MultipartFormData.FilePart<File> filePart = formData.getFile("filename");
@@ -221,7 +236,7 @@ public class ForemanController extends Controller
         DynamicForm dynamicForm = formFactory.form().bindFromRequest();
 
         projectPicture.setPictureId(nextPicId);
-        projectPicture.setContractId(id);
+        projectPicture.setContractId(contractId);
         projectPicture.setPicture(photo);
         projectPicture.setPictureDate(dynamicForm.get("date"));
 
@@ -234,7 +249,7 @@ public class ForemanController extends Controller
 
         System.out.println(dynamicForm.get("date"));
 
-        return ok("photo saved");
+        return redirect(routes.ForemanController.getForemanWelcome(foremanId));
     }
 
     @Transactional
@@ -443,7 +458,7 @@ public class ForemanController extends Controller
 
         int contractId = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :employeeId ORDER BY actualDate DESC", Actual.class).setParameter("employeeId", id).setMaxResults(1).getSingleResult().getEstimate().getContractId();
 
-        return ok(views.html.crewclockintest.render(foreman, employees, equipments, contracts, contractId));
+        return ok(views.html.crewclockin.render(foreman, employees, equipments, contracts, contractId));
     }
 
     @Transactional

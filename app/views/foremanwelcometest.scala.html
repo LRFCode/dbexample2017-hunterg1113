@@ -76,7 +76,7 @@
                                 <h4 class="modal-title">Upload photo</h4>
                             </div>
                             <div class="modal-body">
-                                <form method="post" enctype="multipart/form-data" action="@routes.ForemanController.postUploadPhoto(contract.getContractId)" target="_blank">
+                                <form method="post" enctype="multipart/form-data" action="@routes.ForemanController.postUploadPhoto(contract.getContractId, foreman.getEmployeeId)">
 
                                     <div class="form-group">
                                         <input type="file" class="form-control-file" name="filename" id="filename" required>

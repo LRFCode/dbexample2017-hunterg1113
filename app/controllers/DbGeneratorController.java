@@ -81,6 +81,13 @@ public class DbGeneratorController extends Controller
             jpaApi.em().persist(employee);
         }
 
+        List<ProjectPicture> projectPictures = jpaApi.em().createQuery("FROM ProjectPicture p WHERE pictureId > 15").getResultList();
+
+        for(ProjectPicture photo : projectPictures)
+        {
+            jpaApi.em().remove(photo);
+        }
+
         return ok("done");
     }
 }

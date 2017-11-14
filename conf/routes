@@ -2,34 +2,35 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                                   controllers.LoginController.redirectToLogin
+GET     /                                       controllers.LoginController.redirectToLogin
 
-GET     /login                              controllers.LoginController.getLogin
-POST    /login                              controllers.LoginController.postLogin
-GET     /logout                             controllers.LoginController.getLogOut
+GET     /login                                  controllers.LoginController.getLogin
+POST    /login                                  controllers.LoginController.postLogin
+GET     /logout                                 controllers.LoginController.getLogOut
 
-GET     /crewClockIn/:id                    controllers.ForemanController.getClockInScreen(id: Integer)
-POST    /foremanWelcome/:id                 controllers.ForemanController.getWelcomeScreen(id : Integer)
-GET     /crewClockOut/:id/:contractId       controllers.ForemanController.getClockOutScreen(id: Integer, contractId: Integer)
-POST    /crewClockOut/:id                   controllers.ForemanController.postCrewClockOut(id: Integer)
-POST    /dailySummary/:id                   controllers.ForemanController.postSummaryScreen(id: Integer)
-GET     /plan/:id                           controllers.ForemanController.getPicture(id: Integer)
-GET     /uploadImages                       controllers.ForemanController.getUploadPhoto
-POST    /uploadImages/:id                   controllers.ForemanController.postUploadPhoto(id: Integer)
-GET     /crewClockInTest/:id                controllers.ForemanController.getCrewClockInTest(id: Integer)
-POST    /foremanWelcomeTest/:id             controllers.ForemanController.getForemanWelcomeTest(id: Integer)
+GET     /crewClockIn/:id                        controllers.ForemanController.getClockInScreen(id: Integer)
+GET     /foremanWelcome/:id                     controllers.ForemanController.getForemanWelcome(id: Integer)
+POST    /foremanWelcome/:id                     controllers.ForemanController.postForemanWelcome(id : Integer)
+GET     /crewClockOut/:id/:contractId           controllers.ForemanController.getClockOutScreen(id: Integer, contractId: Integer)
+POST    /crewClockOut/:id                       controllers.ForemanController.postCrewClockOut(id: Integer)
+POST    /dailySummary/:id                       controllers.ForemanController.postSummaryScreen(id: Integer)
+GET     /plan/:id                               controllers.ForemanController.getPicture(id: Integer)
+GET     /uploadImages                           controllers.ForemanController.getUploadPhoto
+POST    /uploadImages/:contractId/:foremanId    controllers.ForemanController.postUploadPhoto(contractId: Integer, foremanId: Integer)
+GET     /crewClockInTest/:id                    controllers.ForemanController.getCrewClockInTest(id: Integer)
+POST    /foremanWelcomeTest/:id                 controllers.ForemanController.getForemanWelcomeTest(id: Integer)
 
-GET     /projectManagerWelcome/:id          controllers.ProjectManagerController.getWelcomeScreen(id : Integer)
-GET     /contractPlan/:id                   controllers.ProjectManagerController.getPlan(id : Integer)
-GET     /contracts                          controllers.ProjectManagerController.getContracts
-GET     /contract/:id                       controllers.ProjectManagerController.getContract(id: Integer)
-GET     /foremanOverview/:id                controllers.ProjectManagerController.getForemanOverview(id: Integer)
-GET     /projectPhotos/:id                  controllers.ProjectManagerController.getPhotos(id: Integer)
-GET     /photo/:id                          controllers.ProjectManagerController.getPhoto(id : Integer)
+GET     /projectManager/:id                     controllers.ProjectManagerController.getTemplate(id: Integer)
+GET     /contractPlan/:id                       controllers.ProjectManagerController.getPlan(id : Integer)
+GET     /contracts                              controllers.ProjectManagerController.getContracts
+GET     /contract/:id                           controllers.ProjectManagerController.getContract(id: Integer)
+GET     /foremanOverview/:id                    controllers.ProjectManagerController.getForemanOverview(id: Integer)
+GET     /projectPhotos/:id                      controllers.ProjectManagerController.getPhotos(id: Integer)
+GET     /photo/:id                              controllers.ProjectManagerController.getPhoto(id : Integer)
 
-GET     /generateDb                         controllers.DbGeneratorController.generateDb
-GET     /resetDb                            controllers.DbGeneratorController.resetDb
+GET     /generateDb                             controllers.DbGeneratorController.generateDb
+GET     /resetDb                                controllers.DbGeneratorController.resetDb
 
-GET     /templateTest/:id                   controllers.ProjectManagerController.getTemplate(id: Integer)
+GET     /templateTest/:id                       controllers.ProjectManagerController.getTemplate(id: Integer)
 
-GET     /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                           controllers.Assets.versioned(path="/public", file: Asset)
