@@ -1,17 +1,18 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import models.*;
+import models.Actual;
+import models.Employee;
+import models.Equipment;
+import models.ProjectPicture;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
 
 public class DbGeneratorController extends Controller
 {
@@ -51,6 +52,7 @@ public class DbGeneratorController extends Controller
         return ok("nada hecho");
     }
 
+    @SuppressWarnings("unchecked")
     @Transactional
     public Result resetDb()
     {

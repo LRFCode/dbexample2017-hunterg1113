@@ -3,91 +3,28 @@ package controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.*;
 import models.Geocoder.Geocoder;
-import play.data.FormFactory;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectManagerController extends Controller
-{
-    JPAApi jpaApi;
-    FormFactory formFactory;
+public class ProjectManagerController extends Controller {
+
+    private JPAApi jpaApi;
 
     @Inject
-    public ProjectManagerController(JPAApi jpaApi, FormFactory formFactory)
-    {
+    public ProjectManagerController(JPAApi jpaApi) {
         this.jpaApi = jpaApi;
-        this.formFactory = formFactory;
     }
 
     @Transactional
-    public Result getWelcomeScreen(Integer id)
-    {
-        Employee projectManager = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
-
-        List<Employee> foremen = jpaApi.em().createQuery("FROM Employee e WHERE title = 'foreman'").getResultList();
-
-        List<JobCoords> mapCoordinates = new ArrayList<>();
-
-        for (Employee employee : foremen)
-        {
-            int employeeId = employee.getEmployeeId();
-
-            Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setParameter("id", employeeId).setMaxResults(1).getSingleResult();
-
-            String recentDate = actual.getActualDate();
-
-            List<Actual> actuals = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id AND actualDate = :recentDate", Actual.class).setParameter("id", employeeId).setParameter("recentDate", recentDate).getResultList();
-
-            employee.setActuals(actuals);
-
-            String clientAddress = actual.getEstimate().getContract().getClient().getFullAddress();
-
-            try
-            {
-                String searchAddress = URLEncoder.encode(clientAddress, "UTF-8");
-
-                URL url = new URL("https://maps.google.com/maps/api/geocode/json?key=AIzaSyAPXxNo-fiKxRlytPCdHAWLYEt2KB2bxpI&address=" + searchAddress);
-                url.openConnection();
-
-                ObjectMapper objectMapper = new ObjectMapper();
-                Geocoder geocoder = objectMapper.readValue(url, Geocoder.class);
-
-                String lat = geocoder.getResults().get(0).getGeometry().getLocation().getLat().toString();
-                String lng = geocoder.getResults().get(0).getGeometry().getLocation().getLng().toString();
-
-                JobCoords jobCoords = new JobCoords();
-
-                jobCoords.setClientLastName(actuals.get(0).getEstimate().getContract().getClient().getFullName());
-                jobCoords.setForemanLastName(employee.getFirstName() + " " + employee.getLastName());
-                jobCoords.setLat(lat);
-                jobCoords.setLng(lng);
-
-                mapCoordinates.add(jobCoords);
-
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-                return ok("Error retrieving map");
-            }
-        }
-
-        return ok(views.html.pmwelcome.render(projectManager, foremen, mapCoordinates));
-    }
-
-    @Transactional
-    public Result getPlan(int id)
-    {
-        Employee projectManager = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
-
+    public Result getPlan(int id) {
         Actual actual = jpaApi.em().createQuery("FROM Actual a WHERE employeeId = :id ORDER BY actualDate DESC", Actual.class).setParameter("id", id).setMaxResults(1).getSingleResult();
 
         byte[] plan = actual.getEstimate().getContract().getPlans();
@@ -96,14 +33,19 @@ public class ProjectManagerController extends Controller
     }
 
     @Transactional
-    public Result getPhotos(int id)
-    {
+    public Result getPhoto(int photoId) {
+        ProjectPicture projectPicture = jpaApi.em().createQuery("FROM ProjectPicture p WHERE pictureId = :id", ProjectPicture.class).setParameter("id", photoId).getSingleResult();
+
+        return ok(projectPicture.getPicture()).as("image.jpg");
+    }
+
+    @Transactional
+    public Result getPhotos(int id) {
         List<ProjectPicture> projectPictures = jpaApi.em().createQuery("FROM ProjectPicture p WHERE contractId = :id", ProjectPicture.class).setParameter("id", id).getResultList();
 
         List<ProjectPicWId> projectPicWIds = new ArrayList<>();
 
-        for (int i = 0; i < projectPictures.size(); i++)
-        {
+        for (int i = 0; i < projectPictures.size(); i++) {
             ProjectPicWId projectPicWId = new ProjectPicWId();
 
             projectPicWId.setContractId(projectPictures.get(i).getContractId());
@@ -120,16 +62,7 @@ public class ProjectManagerController extends Controller
     }
 
     @Transactional
-    public Result getPhoto(int photoId)
-    {
-        ProjectPicture projectPicture = jpaApi.em().createQuery("FROM ProjectPicture p WHERE pictureId = :id", ProjectPicture.class).setParameter("id", photoId).getSingleResult();
-
-        return ok(projectPicture.getPicture()).as("image.jpg");
-    }
-
-    @Transactional
-    public Result getForemanOverview(int id)
-    {
+    public Result getForemanOverview(int id) {
         Employee foreman = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
 
         String sqlSearch = "SELECT c.ContractId, SUM(e.EstimateHours) AS totalEstimateHours, SUM(a.ActualHours) AS totalActualHours " +
@@ -141,12 +74,12 @@ public class ProjectManagerController extends Controller
                 "WHERE c.Completed = 1 AND a.EmployeeId = :id " +
                 "GROUP BY c.ContractId";
 
+        @SuppressWarnings("unchecked")
         List<ProjectSummary> projectSummaries = jpaApi.em().createNativeQuery(sqlSearch, ProjectSummary.class).setParameter("id", id).getResultList();
 
         List<Contract> completedContracts = new ArrayList<>();
 
-        for (ProjectSummary projectSummary : projectSummaries)
-        {
+        for (ProjectSummary projectSummary : projectSummaries) {
             int x = projectSummary.getContractId();
 
             Contract contract = jpaApi.em().createQuery("FROM Contract c WHERE contractId = :id", Contract.class).setParameter("id", x).getSingleResult();
@@ -158,18 +91,17 @@ public class ProjectManagerController extends Controller
     }
 
     @Transactional
-    public Result getTemplate(int id)
-    {
+    public Result getTemplate(int id) {
         Employee projectManager = jpaApi.em().createQuery("FROM Employee e WHERE employeeId = :id", Employee.class).setParameter("id", id).getSingleResult();
 
+        @SuppressWarnings("unchecked")
         List<Employee> foremen = jpaApi.em().createQuery("FROM Employee e WHERE title = 'foreman'").getResultList();
 
         List<JobCoords> mapCoordinates = new ArrayList<>();
 
         List<ForemanSummary> foremanSummaries = new ArrayList<>();
 
-        for (int i = 0; i < foremen.size(); i++)
-        {
+        for (int i = 0; i < foremen.size(); i++) {
             ForemanSummary foremanSummary = new ForemanSummary();
 
             Employee employee = foremen.get(i);
@@ -186,11 +118,10 @@ public class ProjectManagerController extends Controller
 
             String clientAddress = actual.getEstimate().getContract().getClient().getFullAddress();
 
-            try
-            {
+            try {
                 String searchAddress = URLEncoder.encode(clientAddress, "UTF-8");
 
-                URL url = new URL("https://maps.google.com/maps/api/geocode/json?key=AIzaSyAPXxNo-fiKxRlytPCdHAWLYEt2KB2bxpI&address=" + searchAddress);
+                URL url = new URL("https://maps.google.com/maps/api/geocode/json?key=AIzaSyA2K9kp4ru90DKaFx9-amkqvruuGHpmCAI&address=" + searchAddress);
                 url.openConnection();
 
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -208,8 +139,7 @@ public class ProjectManagerController extends Controller
 
                 mapCoordinates.add(jobCoords);
 
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return ok("Error retrieving map");
             }
@@ -222,31 +152,28 @@ public class ProjectManagerController extends Controller
     }
 
     @Transactional
-    public Result getContracts()
-    {
-        List<Contract> contracts = jpaApi.em().createQuery("FROM Contract c WHERE completed = 1ORDER BY contractId").getResultList();
+    public Result getContracts() {
 
-        contracts.get(0).getEstimates();
+        @SuppressWarnings("unchecked")
+        List<Contract> contracts = jpaApi.em().createQuery("FROM Contract c WHERE completed = 1ORDER BY contractId").getResultList();
 
         return ok(views.html.contracts.render(contracts));
     }
 
     @Transactional
-    public Result getContract(int id)
-    {
+    public Result getContract(int id) {
         Contract contract = jpaApi.em().createQuery("FROM Contract c WHERE contractId = :id", Contract.class).setParameter("id", id).getSingleResult();
 
         List<Estimate> estimates = contract.getEstimates();
 
         List<AvgEstHoursPerCat> hours = new ArrayList<>();
 
-        for (Estimate estimate : estimates)
-        {
+        for (Estimate estimate : estimates) {
             AvgEstHoursPerCat hour = new AvgEstHoursPerCat();
 
             int estimateId = estimate.getEstimateId();
 
-            Actual recentActual = jpaApi.em().createQuery("FROM Actual a WHERE estimateId = :estimateId ORDER BY actualDate DESC", Actual.class).setParameter("estimateId",estimateId).setMaxResults(1).getSingleResult();
+            Actual recentActual = jpaApi.em().createQuery("FROM Actual a WHERE estimateId = :estimateId ORDER BY actualDate DESC", Actual.class).setParameter("estimateId", estimateId).setMaxResults(1).getSingleResult();
 
             hour.setActualHours(recentActual.getActualHours());
             hour.setCategoryId(estimate.getCategoryId());
@@ -257,8 +184,6 @@ public class ProjectManagerController extends Controller
         }
 
         Employee foreman = contract.getEstimates().get(0).getActuals().get(0).getEmployee();
-
-        int foremanId = foreman.getEmployeeId();
 
         Client client = contract.getClient();
 
